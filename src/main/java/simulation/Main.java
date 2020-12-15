@@ -1,20 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulation;
 
-/**
- *
- * @author piotrus
- */
+import java.util.ArrayList;
+
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    private ArrayList<Router> routers;
+
     public static void main(String[] args) {
+        
+        Console k = new Console("XD");
+        k.setVisible(true);
+        
         System.out.println("Hello world!");
     }
     
