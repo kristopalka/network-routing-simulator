@@ -16,3 +16,5 @@ simulation/Console.java
  simulation.Console$6
  simulation.Console$7
  simulation.Console$8
+simulation/InputAnalyzer.java
+ simulation.InputAnalyzer

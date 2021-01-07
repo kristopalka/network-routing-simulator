@@ -5,17 +5,23 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class Console extends javax.swing.JFrame {
     
     private String ROUTER_NAME;
+    private String ACTUAL_POSITION;
+    private Queue<String> inputQueue;
 
     public Console(String routerName) {
+        this.inputQueue = new LinkedList<>();
         initComponents();
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
+        this.ACTUAL_POSITION = "";
         this.printInfo(routerName + " has started.\n");
     }
 
@@ -214,8 +220,7 @@ public class Console extends javax.swing.JFrame {
     }//GEN-LAST:event_decreaseFontItemActionPerformed
 
     private void enterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterButtonActionPerformed
-        this.printInput(this.inputTextField.getText());
-        this.inputTextField.setText("");
+        this.enterInput();
     }//GEN-LAST:event_enterButtonActionPerformed
 
     private void inputTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputTextFieldKeyPressed
@@ -235,18 +240,15 @@ public class Console extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_scrollPaneMouseWheelMoved
 
-//    public static void main(String args[]) {
-//        
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Console().setVisible(true);
-//            }
-//        });
-//    }
+    public String getInputAction() throws NullPointerException {
+        return this.inputQueue.remove();
+    }
     
     private void enterInput() {
-        this.printInput(this.inputTextField.getText());
+        String inputText = this.inputTextField.getText();
+        this.printInput(inputText);
         this.inputTextField.setText("");
+        this.inputQueue.add(inputText);
     }
     
     private void printInfo(String text) {
