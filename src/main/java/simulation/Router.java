@@ -1,5 +1,7 @@
 package simulation;
 
+import gui.ConsoleFrame;
+import tools.InputAnalyzer;
 import java.util.ArrayList;
 import java.util.Queue;
 
@@ -10,7 +12,7 @@ public class Router implements Runnable {
     private String routerID;
     private ArrayList<Socket> sockets;
     private Queue<Package> interganBuffer;
-    private Console console;
+    private ConsoleFrame console;
     private InputAnalyzer analyzer;
     private int action;
     
@@ -28,8 +30,7 @@ public class Router implements Runnable {
         //TODO: decide and do something
     }
     
-    private void doConfig() {
-        
+    private void doInputCommand(int action) {
         // TO DO
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -38,31 +39,40 @@ public class Router implements Runnable {
     {
         this.routerID = routerID;
         sockets = new ArrayList<>();
-        console = new Console(routerID);
+        console = new ConsoleFrame(routerID);
         analyzer = new InputAnalyzer();
         //config = new Config();
     }
 
     @Override
     public void run() {
-        while(powerOn)
+        int x = 0;
+        while(true)
         {
+            if(powerOn) {
+                try {
+                    action = this.analyzer.parseInputCommand(this.console.getInputAction());
+                } catch(Exception ex) {
+                    action = 0;
+                }
+                if(action != 0) {
+                    this.doInputCommand(action);
+                    action = 0;
+                }
+
+    //            for(Socket s: sockets)
+    //            {
+    //                Package p = s.getPackage();
+    //                if(p != null) processPackage(p);
+    //            }
+            }
             try {
-                action = this.analyzer.parseInput(this.console.getInputAction());
-            } catch(NullPointerException ex) {
-                action = 0;
+                System.out.println("hello" + x);
+                x++;
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if(action != 0) {
-                this.doConfig();
-                action = 0;
-            }
-            
-            for(Socket s: sockets)
-            {
-                //Package p = s.getPackage();
-                //if(p != null) processPackage(p);
-            }
-            
         }
     }
 }

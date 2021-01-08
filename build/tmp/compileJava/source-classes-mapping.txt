@@ -2,19 +2,22 @@ simulation/Package.java
  simulation.Package
 simulation/Socket.java
  simulation.Socket
+tools/InputAnalyzer.java
+ tools.InputAnalyzer
+gui/ConsoleFrame.java
+ gui.ConsoleFrame
+ gui.ConsoleFrame$1
+ gui.ConsoleFrame$2
+ gui.ConsoleFrame$3
+ gui.ConsoleFrame$4
+ gui.ConsoleFrame$5
+ gui.ConsoleFrame$6
+ gui.ConsoleFrame$7
+ gui.ConsoleFrame$8
 simulation/Router.java
  simulation.Router
 simulation/Main.java
  simulation.Main
-simulation/Console.java
- simulation.Console
- simulation.Console$1
- simulation.Console$2
- simulation.Console$3
- simulation.Console$4
- simulation.Console$5
- simulation.Console$6
- simulation.Console$7
- simulation.Console$8
-simulation/InputAnalyzer.java
- simulation.InputAnalyzer
+gui/MainFrame.java
+ gui.MainFrame
+ gui.MainFrame$1

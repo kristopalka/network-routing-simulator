@@ -1,4 +1,4 @@
-package simulation;
+package gui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,13 +10,13 @@ import java.util.Queue;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-public class Console extends javax.swing.JFrame {
+public class ConsoleFrame extends javax.swing.JFrame {
     
     private String ROUTER_NAME;
     private String ACTUAL_POSITION;
     private Queue<String> inputQueue;
 
-    public Console(String routerName) {
+    public ConsoleFrame(String routerName) {
         this.inputQueue = new LinkedList<>();
         initComponents();
         this.ROUTER_NAME = routerName;
@@ -48,7 +48,6 @@ public class Console extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Router");
         setMinimumSize(new java.awt.Dimension(320, 240));
-        setPreferredSize(new java.awt.Dimension(640, 480));
         setSize(new java.awt.Dimension(640, 480));
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -240,7 +239,7 @@ public class Console extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_scrollPaneMouseWheelMoved
 
-    public String getInputAction() throws NullPointerException {
+    public String getInputAction() throws Exception {
         return this.inputQueue.remove();
     }
     

@@ -1,17 +1,26 @@
 package simulation;
 
+import gui.*;
 import java.util.ArrayList;
 
 public class Main {
 
     private ArrayList<Router> routers;
+    private MainFrame mainFrame; 
 
     public static void main(String[] args) {
         
-        Console k = new Console("XD");
-        k.setVisible(true);
+        Main mainProgram = new Main();
         
-        System.out.println("Hello world!");
+        mainProgram.mainFrame = new MainFrame();
+        mainProgram.mainFrame.setSize(1280, 720);
+        mainProgram.mainFrame.setVisible(true);
+        
+//        Router r = new Router("Router");
+//        Thread t = new Thread(r);
+//        t.start();
+//        r.showConsole();
+        
     }
     
     public static String getInfo() {
