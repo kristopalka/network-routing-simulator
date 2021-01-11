@@ -1,4 +1,4 @@
-package simulation;
+package simulation.Router;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -37,12 +37,12 @@ public class Socket
 
     // ------------------------------------ sending and receiving packages ------------------------------------
 
-    public void sendPackage(Package p)
+    public void sendPackageThruPort(Package p)
     {
-        outerSocket.pushPackage(p);
+        outerSocket.pushPackageToBuff(p);
     }
 
-    private void pushPackage(Package p)
+    private void pushPackageToBuff(Package p)
     {
         try
         {
@@ -54,7 +54,7 @@ public class Socket
         }
     }
 
-    protected Package getPackage()
+    protected Package receivePackageFromPort()
     {
         try
         {
@@ -65,6 +65,11 @@ public class Socket
             System.out.println("Cannot get package from buffer: " + e.getMessage());
             return null;
         }
+    }
+
+    protected void clearBuff()
+    {
+        inputBuff.clear();
     }
 
 }

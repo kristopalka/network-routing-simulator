@@ -1,9 +1,8 @@
-package simulation;
+package simulation.Router;
 
 import gui.ConsoleFrame;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Router implements Runnable
 {
@@ -19,7 +18,7 @@ public class Router implements Runnable
     public Router(String routerID, int numberOfSockets)
     {
         this.routerID = routerID;
-        this.powerOn = true;
+        this.powerOn = false;
         sockets = new HashMap<>();
         console = new ConsoleFrame(routerID);
         config = new Config();
@@ -31,13 +30,20 @@ public class Router implements Runnable
         }
     }
 
-    public Router(Router r) // clone constructor
+    public Router(String routerID, String[] socketsNames)
     {
-        this.routerID = r.routerID;
-        this.sockets = r.sockets;
-        this.console = new ConsoleFrame(routerID);
-        this.config = new Config();
+        this.routerID = routerID;
+        this.powerOn = false;
+        sockets = new HashMap<>();
+        console = new ConsoleFrame(routerID);
+        config = new Config();
+
+        for(String socketName : socketsNames)
+        {
+            sockets.put(socketName, new Socket(socketName));
+        }
     }
+
 
     // ------------------------------------ getters ------------------------------------
 
@@ -59,35 +65,25 @@ public class Router implements Runnable
 
     // ------------------------------------ processing ------------------------------------
 
-    /*@Override
-    public void run()
-    {
-        while(true)
-        {
-            for(Map.Entry<String, Socket> one : sockets.entrySet())
-            {
-                Socket s = one.getValue();
-                Package p = s.getPackage();
-                if(p != null) processPackage(p);
-            }
-        }
-    }*/
     
     @Override
-    public void run() {
+    public void run()
+    {
+        // clear all ports buffers on the beggining
+        for(HashMap.Entry<String, Socket> one : sockets.entrySet()) { one.getValue().clearBuff(); }
+
         int x = 0;
         while(true)
         {
-            if(powerOn) {
-                System.out.println("XD");
+            for(HashMap.Entry<String, Socket> one : sockets.entrySet())
+            {
+                Socket s = one.getValue();
+                Package p = s.receivePackageFromPort();
+                if(p != null) processPackage(p);
             }
-            try {
-                System.out.println("hello" + x);
-                x++;
-                Thread.sleep(1000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+            try{ wait(20); }
+            catch(InterruptedException e) { return; }
         }
     }
     
