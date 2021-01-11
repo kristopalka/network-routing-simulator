@@ -16,10 +16,10 @@ public class Main {
         mainProgram.mainFrame.setSize(1280, 720);
         mainProgram.mainFrame.setVisible(true);
         
-//        Router r = new Router("Router");
-//        Thread t = new Thread(r);
-//        t.start();
-//        r.showConsole();
+        Router r = new Router("Router");
+        Thread t = new Thread(r);
+        t.start();
+        r.showConsole();
         
     }
     

@@ -2,8 +2,9 @@ simulation/Package.java
  simulation.Package
 simulation/Socket.java
  simulation.Socket
-tools/InputAnalyzer.java
- tools.InputAnalyzer
+gui/MainFrame.java
+ gui.MainFrame
+ gui.MainFrame$1
 gui/ConsoleFrame.java
  gui.ConsoleFrame
  gui.ConsoleFrame$1
@@ -16,8 +17,7 @@ gui/ConsoleFrame.java
  gui.ConsoleFrame$8
 simulation/Router.java
  simulation.Router
+tools/InputAnalyzer.java
+ tools.InputAnalyzer
 simulation/Main.java
  simulation.Main
-gui/MainFrame.java
- gui.MainFrame
- gui.MainFrame$1
