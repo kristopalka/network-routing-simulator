@@ -1,10 +1,14 @@
-package simulation.Router;
+package layout.components.router;
 
 import gui.ConsoleFrame;
+import layout.components.Config;
+import layout.components.Package;
+import layout.components.Socket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Router implements Runnable
+public abstract class Router implements Runnable
 {
     private String routerID;
     private HashMap<String, Socket> sockets;
@@ -15,7 +19,7 @@ public class Router implements Runnable
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Router(String routerID, int numberOfSockets)
+    private Router(String routerID, int numberOfSockets)
     {
         this.routerID = routerID;
         this.powerOn = false;
@@ -26,11 +30,11 @@ public class Router implements Runnable
         for(int i=0; i<numberOfSockets; i++)
         {
             String socketID = String.valueOf(i);
-            sockets.put(socketID, new Socket(socketID));
+            sockets.put(socketID, new Socket(socketID, routerID));
         }
     }
 
-    public Router(String routerID, String[] socketsNames)
+    protected Router(String routerID, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
     {
         this.routerID = routerID;
         this.powerOn = false;
@@ -40,14 +44,14 @@ public class Router implements Runnable
 
         for(String socketName : socketsNames)
         {
-            sockets.put(socketName, new Socket(socketName));
+            sockets.put(socketName, new Socket(socketName, routerID));
         }
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getRouterID()
+    public String getID()
     {
         return routerID;
     }
@@ -57,7 +61,7 @@ public class Router implements Runnable
         return sockets;
     }
 
-    public Socket getSocket(String socketID)
+    public Socket socket(String socketID)
     {
         return sockets.get(socketID);
     }
@@ -65,16 +69,16 @@ public class Router implements Runnable
 
     // ------------------------------------ processing ------------------------------------
 
-    
     @Override
     public void run()
     {
         // clear all ports buffers on the beggining
-        for(HashMap.Entry<String, Socket> one : sockets.entrySet()) { one.getValue().clearBuff(); }
+        clearSockets();
 
         int x = 0;
         while(true)
         {
+            // processing package
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
                 Socket s = one.getValue();
@@ -82,6 +86,8 @@ public class Router implements Runnable
                 if(p != null) processPackage(p);
             }
 
+
+            // waiting a while
             try{ wait(20); }
             catch(InterruptedException e) { return; }
         }
@@ -100,9 +106,16 @@ public class Router implements Runnable
         console.setVisible(true);
     }
 
-    public void clearSockets()
+    public void hideConsole()
     {
-
+        console.setVisible(false);
     }
 
+    public void clearSockets()
+    {
+        for(HashMap.Entry<String, Socket> one : sockets.entrySet())
+        {
+            one.getValue().clearBuff();
+        }
+    }
 }

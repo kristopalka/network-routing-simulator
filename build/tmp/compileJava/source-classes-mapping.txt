@@ -8,24 +8,35 @@ gui/ConsoleFrame.java
  gui.ConsoleFrame$6
  gui.ConsoleFrame$7
  gui.ConsoleFrame$8
-tools/InputAnalyzer.java
- tools.InputAnalyzer
 gui/MainFrame.java
  gui.MainFrame
  gui.MainFrame$1
-simulation/Main2.java
- simulation.Main2
-simulation/Router.java
- simulation.Router
-simulation/Main.java
- simulation.Main
-simulation/Config.java
- simulation.Config
-simulation/Socket.java
- simulation.Socket
-simulation/Package.java
- simulation.Package
-simulation/Simulation.java
- simulation.Simulation
-simulation/Layout.java
- simulation.Layout
+tests/IPConverterTest.java
+ tests.IPConverterTest
+tools/IPConverter.java
+ tools.IPConverter
+tools/InputAnalyzer.java
+ tools.InputAnalyzer
+layout/components/Config.java
+ layout.components.Config
+Main.java
+ Main
+layout/components/Package.java
+ layout.components.Package
+layout/components/Socket.java
+ layout.components.Socket
+layout/components/router/Router.java
+ layout.components.router.Router
+layout/components/router/Router3.java
+ layout.components.router.Router3
+ layout.components.router.Router3$1
+layout/components/router/Router4.java
+ layout.components.router.Router4
+ layout.components.router.Router4$1
+layout/components/router/PC.java
+ layout.components.router.PC
+ layout.components.router.PC$1
+layout/Layout.java
+ layout.Layout
+tests/LayoutTest.java
+ tests.LayoutTest

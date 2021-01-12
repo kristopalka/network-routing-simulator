@@ -1,20 +1,22 @@
-package simulation.Router;
+package layout.components;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Socket
 {
+    private String routerID;
     private String socketID;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
-    private int address;                //TODO obsługa błędów, nienależenie do tej samej sieci, itd
-    private int netmask;                //TODO gettery, settery
+    private long address;                //TODO obsługa błędów, nienależenie do tej samej sieci, itd
+    private long netmask;                //TODO gettery, settery
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Socket(String socketID)
+    public Socket(String socketID, String routerID)
     {
+        this.routerID = routerID;
         this.socketID = socketID;
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
@@ -23,7 +25,9 @@ public class Socket
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getSocketID() { return socketID; }
+    public String getID() { return socketID; }
+
+    public String getPath() { return routerID + "." + socketID; }
 
     public Socket getOuterSocket() { return outerSocket; }
 
@@ -42,7 +46,7 @@ public class Socket
         outerSocket.pushPackageToBuff(p);
     }
 
-    private void pushPackageToBuff(Package p)
+    public void pushPackageToBuff(Package p)
     {
         try
         {
@@ -54,7 +58,7 @@ public class Socket
         }
     }
 
-    protected Package receivePackageFromPort()
+    public Package receivePackageFromPort()
     {
         try
         {
@@ -67,7 +71,7 @@ public class Socket
         }
     }
 
-    protected void clearBuff()
+    public void clearBuff()
     {
         inputBuff.clear();
     }
