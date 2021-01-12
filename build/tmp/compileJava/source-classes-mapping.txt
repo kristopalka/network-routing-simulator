@@ -1,7 +1,15 @@
+tests/LayoutTest.java
+ tests.LayoutTest
+simulation/router/Package.java
+ simulation.router.Package
+tests/IPConverterTest.java
+ tests.IPConverterTest
+tools/IPConverter.java
+ tools.IPConverter
+tools/InputAnalyzer.java
+ tools.InputAnalyzer
 simulation/Main.java
  simulation.Main
-simulation/Router/Config.java
- simulation.Router.Config
 gui/ConsoleFrame.java
  gui.ConsoleFrame
  gui.ConsoleFrame$1
@@ -12,20 +20,14 @@ gui/ConsoleFrame.java
  gui.ConsoleFrame$6
  gui.ConsoleFrame$7
  gui.ConsoleFrame$8
-tools/InputAnalyzer.java
- tools.InputAnalyzer
 gui/MainFrame.java
  gui.MainFrame
  gui.MainFrame$1
+simulation/router/Router.java
+ simulation.router.Router
+simulation/router/Socket.java
+ simulation.router.Socket
 simulation/Layout.java
  simulation.Layout
-simulation/Router/Router.java
- simulation.Router.Router
-simulation/Router/Package.java
- simulation.Router.Package
-simulation/Router/Socket.java
- simulation.Router.Socket
-tests/IPConverterTest.java
- tests.IPConverterTest
-tools/IPConverter.java
- tools.IPConverter
+simulation/router/Config.java
+ simulation.router.Config

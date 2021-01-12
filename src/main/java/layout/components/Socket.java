@@ -1,4 +1,4 @@
-package simulation.Router;
+package layout.components;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -54,7 +54,7 @@ public class Socket
         }
     }
 
-    protected Package receivePackageFromPort()
+    public Package receivePackageFromPort()
     {
         try
         {
@@ -67,7 +67,7 @@ public class Socket
         }
     }
 
-    protected void clearBuff()
+    public void clearBuff()
     {
         inputBuff.clear();
     }

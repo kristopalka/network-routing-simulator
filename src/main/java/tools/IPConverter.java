@@ -3,7 +3,7 @@ package tools;
 import java.security.InvalidParameterException;
 import java.util.regex.Pattern;
 
-public class IPConverter
+public abstract class IPConverter
 {
     public static long strToNum(String ip) throws InvalidParameterException
     {
