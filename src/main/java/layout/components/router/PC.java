@@ -1,7 +1,6 @@
-package layout.router;
+package layout.components.router;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PC extends Router
 {
@@ -10,7 +9,6 @@ public class PC extends Router
         super(routerID, new ArrayList<String>()
         {{
             add("blue");
-            add("yellow");
         }});
     }
 

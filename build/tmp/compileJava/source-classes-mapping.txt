@@ -1,15 +1,3 @@
-tests/LayoutTest.java
- tests.LayoutTest
-simulation/router/Package.java
- simulation.router.Package
-tests/IPConverterTest.java
- tests.IPConverterTest
-tools/IPConverter.java
- tools.IPConverter
-tools/InputAnalyzer.java
- tools.InputAnalyzer
-simulation/Main.java
- simulation.Main
 gui/ConsoleFrame.java
  gui.ConsoleFrame
  gui.ConsoleFrame$1
@@ -23,11 +11,32 @@ gui/ConsoleFrame.java
 gui/MainFrame.java
  gui.MainFrame
  gui.MainFrame$1
-simulation/router/Router.java
- simulation.router.Router
-simulation/router/Socket.java
- simulation.router.Socket
-simulation/Layout.java
- simulation.Layout
-simulation/router/Config.java
- simulation.router.Config
+tests/IPConverterTest.java
+ tests.IPConverterTest
+tools/IPConverter.java
+ tools.IPConverter
+tools/InputAnalyzer.java
+ tools.InputAnalyzer
+layout/components/Config.java
+ layout.components.Config
+Main.java
+ Main
+layout/components/Package.java
+ layout.components.Package
+layout/components/Socket.java
+ layout.components.Socket
+layout/components/router/Router.java
+ layout.components.router.Router
+layout/components/router/Router3.java
+ layout.components.router.Router3
+ layout.components.router.Router3$1
+layout/components/router/Router4.java
+ layout.components.router.Router4
+ layout.components.router.Router4$1
+layout/components/router/PC.java
+ layout.components.router.PC
+ layout.components.router.PC$1
+layout/Layout.java
+ layout.Layout
+tests/LayoutTest.java
+ tests.LayoutTest

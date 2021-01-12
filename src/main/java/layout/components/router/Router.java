@@ -1,4 +1,4 @@
-package layout.router;
+package layout.components.router;
 
 import gui.ConsoleFrame;
 import layout.components.Config;
@@ -30,11 +30,11 @@ public abstract class Router implements Runnable
         for(int i=0; i<numberOfSockets; i++)
         {
             String socketID = String.valueOf(i);
-            sockets.put(socketID, new Socket(socketID));
+            sockets.put(socketID, new Socket(socketID, routerID));
         }
     }
 
-    public Router(String routerID, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
+    protected Router(String routerID, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
     {
         this.routerID = routerID;
         this.powerOn = false;
@@ -44,14 +44,14 @@ public abstract class Router implements Runnable
 
         for(String socketName : socketsNames)
         {
-            sockets.put(socketName, new Socket(socketName));
+            sockets.put(socketName, new Socket(socketName, routerID));
         }
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getRouterID()
+    public String getID()
     {
         return routerID;
     }
@@ -61,7 +61,7 @@ public abstract class Router implements Runnable
         return sockets;
     }
 
-    public Socket getSocket(String socketID)
+    public Socket socket(String socketID)
     {
         return sockets.get(socketID);
     }
