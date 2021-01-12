@@ -2,8 +2,8 @@ package simulation.Router;
 
 public class Package
 {
-    private int source;
-    private int destination;
+    private long source;
+    private long destination;
     private Object information;
 
 
@@ -24,12 +24,12 @@ public class Package
         return information;
     }
 
-    public int getSource()
+    public long getSource()
     {
         return source;
     }
 
-    public int getDestination()
+    public long getDestination()
     {
         return destination;
     }

@@ -8,8 +8,8 @@ public class Socket
     private String socketID;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
-    private int address;                //TODO obsługa błędów, nienależenie do tej samej sieci, itd
-    private int netmask;                //TODO gettery, settery
+    private long address;                //TODO obsługa błędów, nienależenie do tej samej sieci, itd
+    private long netmask;                //TODO gettery, settery
 
     // ------------------------------------ constructors ------------------------------------
 

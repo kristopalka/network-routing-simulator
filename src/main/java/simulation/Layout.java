@@ -1,4 +1,7 @@
-package simulation.Router;
+package simulation;
+
+import simulation.Router.Router;
+import simulation.Router.Socket;
 
 import java.util.HashMap;
 

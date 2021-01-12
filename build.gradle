@@ -10,5 +10,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation     'junit:junit:4.13'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.0.1")
+    //testImplementation     'junit:junit:4.13'
 }

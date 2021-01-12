@@ -1,12 +1,14 @@
 package simulation;
 
-import simulation.Router.Layout;
 import simulation.Router.Router;
 
 public class Main
 {
     public static void main(String[] args)
     {
+
+
+
         Router r1 = new Router("r1", 5);
         Router r2 = new Router("r2", 2);
 

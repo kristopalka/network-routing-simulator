@@ -1,3 +1,7 @@
+simulation/Main.java
+ simulation.Main
+simulation/Router/Config.java
+ simulation.Router.Config
 gui/ConsoleFrame.java
  gui.ConsoleFrame
  gui.ConsoleFrame$1
@@ -13,19 +17,15 @@ tools/InputAnalyzer.java
 gui/MainFrame.java
  gui.MainFrame
  gui.MainFrame$1
-simulation/Main2.java
- simulation.Main2
-simulation/Router.java
- simulation.Router
-simulation/Main.java
- simulation.Main
-simulation/Config.java
- simulation.Config
-simulation/Socket.java
- simulation.Socket
-simulation/Package.java
- simulation.Package
-simulation/Simulation.java
- simulation.Simulation
 simulation/Layout.java
  simulation.Layout
+simulation/Router/Router.java
+ simulation.Router.Router
+simulation/Router/Package.java
+ simulation.Router.Package
+simulation/Router/Socket.java
+ simulation.Router.Socket
+tests/IPConverterTest.java
+ tests.IPConverterTest
+tools/IPConverter.java
+ tools.IPConverter
