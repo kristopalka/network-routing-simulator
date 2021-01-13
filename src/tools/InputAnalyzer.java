@@ -1,11 +1,9 @@
 package tools;
 
 public class InputAnalyzer {
-    public InputAnalyzer() {
+    
+    public static String parseInputCommand(String inputAction) {
         
-    }
-
-    public int parseInputCommand(String inputAction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated method
+        return "";
     }
 }

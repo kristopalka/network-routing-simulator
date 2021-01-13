@@ -7,6 +7,7 @@ import layout.components.Socket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import tools.InputAnalyzer;
 
 public abstract class Router implements Runnable
 {
@@ -25,6 +26,9 @@ public abstract class Router implements Runnable
         this.powerOn = false;
         sockets = new HashMap<>();
         console = new ConsoleFrame(routerID);
+        console.commands = (String command) -> {
+            handleCommand(command);
+        };
         config = new Config();
 
         for(String socketName : socketsNames)
@@ -110,5 +114,9 @@ public abstract class Router implements Runnable
         {
             one.getValue().clearBuff();
         }
+    }
+
+    private void handleCommand(String text) {
+        String parsed = InputAnalyzer.parseInputCommand(text);
     }
 }

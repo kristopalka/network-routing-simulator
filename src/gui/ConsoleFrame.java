@@ -7,21 +7,19 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Consumer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class ConsoleFrame extends javax.swing.JFrame {
     
     private String ROUTER_NAME;
-    private String ACTUAL_POSITION;
-    private Queue<String> inputQueue;
+    public Consumer<String> commands;
 
     public ConsoleFrame(String routerName) {
-        this.inputQueue = new LinkedList<>();
         initComponents();
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
-        this.ACTUAL_POSITION = "";
         this.printInfo(routerName + " has started.\n");
     }
 
@@ -239,15 +237,13 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_scrollPaneMouseWheelMoved
 
-    public String getInputAction() throws Exception {
-        return this.inputQueue.remove();
-    }
-    
     private void enterInput() {
         String inputText = this.inputTextField.getText();
         this.printInput(inputText);
         this.inputTextField.setText("");
-        this.inputQueue.add(inputText);
+        if(commands != null) {
+            commands.accept(inputText);
+        }
     }
     
     private void printInfo(String text) {
