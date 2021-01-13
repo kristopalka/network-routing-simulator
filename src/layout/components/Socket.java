@@ -7,8 +7,8 @@ import java.util.Queue;
 
 public class Socket
 {
-    private String routerID;
-    private String socketID;
+    private String routerName;
+    private String socketName;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
 
@@ -17,25 +17,24 @@ public class Socket
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Socket(String socketID, String routerID)
+    public Socket(String socketName, String routerName)
     {
-        this.routerID = routerID;
-        this.socketID = socketID;
+        this.routerName = routerName;
+        this.socketName = socketName;
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
 
-
-        //todo starting addresses??????
+        // no concrete IP address (mask 32)
         address = IPConverter.strToNum("0.0.0.0");
-        netmask = IPConverter.getMask(32);
+        netmask = IPConverter.strToNum("255.255.255.255");
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getID() { return socketID; }
+    public String getName() { return socketName; }
 
-    public String getPathID() { return routerID + "." + socketID; }
+    public String getFullName() { return routerName + "." + socketName; }
 
     public Socket getOuterSocket() { return outerSocket; }
 
@@ -61,6 +60,12 @@ public class Socket
         this.address = IPConverter.strToNum(address);
     }
 
+    public void setAddress(String address, int netmask)
+    {
+        this.address = IPConverter.strToNum(address);
+        this.netmask = IPConverter.getMask(netmask);
+    }
+
     public void setNetmask(String netmask)
     {
         this.netmask = IPConverter.strToNum(netmask);
@@ -76,7 +81,7 @@ public class Socket
 
     public void sendPackageThruPort(Package p)
     {
-        p.addToRoute(getPathID());
+        p.onGoThruPort(getFullName());
         outerSocket.pushPackageToBuff(p);
     }
 
@@ -97,7 +102,7 @@ public class Socket
         Package p = inputBuff.poll();
         if(p != null)
         {
-            p.addToRoute(getPathID());
+            p.onGoThruPort(getFullName());
             return p;
         }
         else return null;

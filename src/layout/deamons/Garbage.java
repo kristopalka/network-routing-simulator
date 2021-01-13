@@ -12,8 +12,6 @@ public class Garbage extends Daemon
     @Override
     public boolean processPackage(Package p)
     {
-        System.out.println("Garbage: cannot send package \"" + p.getInformation().toString() + "\"\n" );
-
         garbage.add(p);
         return true;
     }

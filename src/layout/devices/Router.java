@@ -9,41 +9,45 @@ import java.util.*;
 
 public abstract class Router implements Runnable
 {
-    protected String routerID;
-    protected HashMap<String, Socket> sockets = new HashMap<>();;
+    private String routerName;
+    protected int routerID;
+    protected HashMap<String, Socket> sockets = new HashMap<>();
     protected ConsoleFrame console;
 
     protected boolean isRunning = false;
     protected int tickTime = 1000;
     protected int timeFromStart = 0;
 
-    protected SelfPortsRouting daemonSelfPorts = new SelfPortsRouting(sockets);
-    protected StaticRouting daemonStatic = null;
-    protected RIP daemonRIP = null;
-    protected Garbage daemonGarbage = new Garbage();
+
+    public StaticRouting daemonStatic = null;
+    public RIP daemonRIP = null;
+    public Garbage daemonGarbage = new Garbage();
 
 
     // ------------------------------------ constructor ------------------------------------
 
-    protected Router(String routerID, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
+    protected Router(int routerID, String routerName, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
     {
+        this.routerName = routerName;
         this.routerID = routerID;
-        console = new ConsoleFrame(routerID);
+        console = new ConsoleFrame(routerName);
 
 
         for(String socketName : socketsNames)
         {
-            sockets.put(socketName, new Socket(socketName, routerID));
+            sockets.put(socketName, new Socket(socketName, routerName));
         }
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getID()
+    public int getID()
     {
         return routerID;
     }
+
+    public String getName() { return routerName; }
 
     public HashMap<String, Socket> getAllSockets()
     {
@@ -60,6 +64,12 @@ public abstract class Router implements Runnable
         return timeFromStart;
     }
 
+    // ------------------------------------ getters ------------------------------------
+
+    public void setName(String routerName)
+    {
+        //todo /////////////////////////////////////////////////////////////////////////////////////<<<<<<<<<<
+    }
 
     // ------------------------------------ run ------------------------------------
 
@@ -72,14 +82,18 @@ public abstract class Router implements Runnable
 
         while(true)
         {
-            //System.out.println(routerID + " is running");
+            System.out.println(routerName + ": ~");
 
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
                 Socket s = one.getValue();
                 Package p = s.receivePackageFromPort();
-                if(p != null) processPackage(p);
+                if(p != null)
+                {
+                    String log = proceedPackage(p);
+                    System.out.println(routerName + ": received package " + p.toString() + " " + log);
+                }
             }
 
             // -------------- waiting a while --------------
@@ -95,35 +109,78 @@ public abstract class Router implements Runnable
 
     // ------------------------------------ processing ------------------------------------
 
-    public void processPackage(Package p)
+    public void sendPackage(Package p)
     {
+        p.onStart("From " + routerName);
+        String log = proceedPackage(p);
+        System.out.println(routerName + ": send package " + p.toString() + " " + log);
+    }
+
+
+    protected String proceedPackage(Package p)
+    {
+        String log = "";
+
+        if(p.getTTL() <= 0)
+        {
+            log += "cannot send (TTL=0)";
+            return log;
+        }
+
         for(Socket socket : sockets.values())
         {
             if(socket.getAddress() == p.getDestination())
             {
                 packageForMe(p);
-                return;
+                log += "for me " + p.getLog();
+                return log;
             }
             if(socket.getOuterSocket() != null)
             {
-                if (p.getDestination() == socket.getOuterSocket().getAddress())
+                //if (p.getDestination() == socket.getOuterSocket().getAddress())
+                Socket outer = socket.getOuterSocket();
+                if((outer.getNetmask()&outer.getAddress()) == (p.getDestination()&outer.getNetmask()))
                 {
                     socket.sendPackageThruPort(p);
-                    return;
+                    log += "send by CONNECTED PORTS";
+                    return log;
                 }
             }
         }
+        if(daemonStatic.processPackage(p))
+        {
+            log += "send by STATIC ROUTING";
+            return log;
+        }
 
-        if(daemonStatic.processPackage(p)) return;
-        if(daemonRIP.processPackage(p)) return;
+        if(daemonRIP.processPackage(p))
+        {
+            log += "send by RIP";
+            return log;
+        }
+
         daemonGarbage.processPackage(p);
+        log += "CANNOT SEND " + p.getLog();
+        return log;
     }
 
-    public void packageForMe(Package p)
+    protected void packageForMe(Package p)
     {
         if(p.getInformation().toString() == "ping")
+        {
+            Package re = new Package(p.getDestination(), p.getSource(), "ping repy");
 
-        System.out.println(routerID + " received package:\n" + p.getInformation().toString() + "\n" + p.getRoute() + "\n");
+            sendPackage(re);
+        }
+    }
+
+    protected void clearSockets()
+    {
+        for(HashMap.Entry<String, Socket> one : sockets.entrySet())
+        {
+            one.getValue().clearBuff();
+        }
+        daemonGarbage.clearGaarbage();
     }
 
 
@@ -133,12 +190,4 @@ public abstract class Router implements Runnable
 
     public void hideConsole() { console.setVisible(false); }
 
-    public void clearSockets()
-    {
-        for(HashMap.Entry<String, Socket> one : sockets.entrySet())
-        {
-            one.getValue().clearBuff();
-        }
-        daemonGarbage.clearGaarbage();
-    }
 }
