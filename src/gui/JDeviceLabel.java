@@ -8,15 +8,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import tools.OnScreenLocation;
 
 public class JDeviceLabel extends JLabel {
     
     private int xPressed = 0;
     private int yPressed = 0;
     
-    public JDeviceLabel(String text, Icon icon, OnScreenLocation location) {
+    public JDeviceLabel(String text, Icon icon, Point location) {
         super();
         this.setPreferredSize(new Dimension(80, 80));
         this.setSize(this.getPreferredSize());
@@ -28,7 +26,7 @@ public class JDeviceLabel extends JLabel {
         this.setText(text);
         this.setVerticalTextPosition(JLabel.BOTTOM);
         this.setHorizontalTextPosition(JLabel.CENTER);
-        this.setLocation(location.getX(), location.getY());
+        this.setLocation((int) location.getX(), (int) location.getY());
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         this.addMouseListener(new PopClickListener());
 

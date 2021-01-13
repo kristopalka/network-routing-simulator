@@ -5,8 +5,8 @@
         <group>
             <file>file:/home/piotrus/Project-Simulation/src/simulation/Main.java</file>
             <file>file:/home/piotrus/Project-Simulation/src/layout/Layout.java</file>
-            <file>file:/home/piotrus/Project-Simulation/src/tools/OnScreenLocation.java</file>
             <file>file:/home/piotrus/Project-Simulation/src/layout/devices/Router.java</file>
+            <file>file:/home/piotrus/Project-Simulation/src/gui/JDevicePopUpMenu.java</file>
             <file>file:/home/piotrus/Project-Simulation/src/gui/ConsoleFrame.java</file>
             <file>file:/home/piotrus/Project-Simulation/src/tools/InputAnalyzer.java</file>
             <file>file:/home/piotrus/Project-Simulation/src/gui/JDeviceLabel.java</file>

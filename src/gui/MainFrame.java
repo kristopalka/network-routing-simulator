@@ -2,13 +2,10 @@ package gui;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.util.HashMap;
+import java.util.HashSet;
 import tools.ImageIconGetter;
-import tools.OnScreenLocation;
 
 public class MainFrame extends javax.swing.JFrame {
     
@@ -17,7 +14,7 @@ public class MainFrame extends javax.swing.JFrame {
     // actualMode:  0-def, 1-add4SR, 2-add3SR, 3-addPC, 4-addLink, 5-del
     private int actualMode;
     
-    private HashMap<OnScreenLocation, JDeviceLabel> screenMap;
+    private HashSet<JDeviceLabel> screenMap;
 
     public MainFrame() {
         
@@ -26,12 +23,12 @@ public class MainFrame extends javax.swing.JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         iig = new ImageIconGetter();
-        screenMap = new HashMap<>();
+        screenMap = new HashSet<>();
         initComponents();
         
     }
     
-    private JDeviceLabel getJDeviceLabel(OnScreenLocation location) {
+    private JDeviceLabel getJDeviceLabel(Point location) {
         return switch (this.actualMode) {
             case 1 -> new JDeviceLabel("4SR", iig.getIcon("router4.png", 54), location);
             case 2 -> new JDeviceLabel("3SR", iig.getIcon("router3.png", 54), location);
@@ -318,14 +315,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void simulationPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simulationPanelMouseClicked
         if(this.actualMode != 0) {
             if(this.actualMode < 4) {
-                OnScreenLocation osl = new OnScreenLocation(evt.getX(), evt.getY());
-                if(!this.screenMap.containsKey(osl)) {
-                    JDeviceLabel jdl = this.getJDeviceLabel(osl);
-                    this.screenMap.put(osl, jdl);
+                    JDeviceLabel jdl = this.getJDeviceLabel(new Point(evt.getX(), evt.getY()));
+                    this.screenMap.add(jdl);
                     this.simulationPanel.add(jdl);
                     this.simulationPanel.revalidate();
                     this.simulationPanel.repaint();
-                }
             }
             
             this.simulationScroll.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
