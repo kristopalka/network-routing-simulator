@@ -86,9 +86,12 @@ public abstract class Router implements Runnable
                 if(p != null) processPackage(p);
             }
 
+            System.out.println("Hello world");
 
             // waiting a while
-            try{ wait(20); }
+            try {
+                Thread.sleep(200);
+            }
             catch(InterruptedException e) { return; }
         }
     }

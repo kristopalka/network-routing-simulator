@@ -62,8 +62,8 @@ public class MainFrame extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(640, 480));
 
         addingPanel.setBackground(new java.awt.Color(200, 200, 200));
-        addingPanel.setMinimumSize(new java.awt.Dimension(128, 84));
-        addingPanel.setPreferredSize(new java.awt.Dimension(128, 512));
+        addingPanel.setMinimumSize(new java.awt.Dimension(256, 128));
+        addingPanel.setPreferredSize(new java.awt.Dimension(256, 512));
         addingPanel.setLayout(new java.awt.GridLayout(4, 1));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
