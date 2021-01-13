@@ -1,5 +1,8 @@
 package layout.devices;
 
+import layout.deamons.RIP;
+import layout.deamons.StaticRouting;
+
 import java.util.ArrayList;
 
 public class Router3 extends Router
@@ -13,5 +16,7 @@ public class Router3 extends Router
             add("red");
         }});
 
+        daemonStatic = new StaticRouting(sockets);
+        daemonRIP = new RIP(sockets);
     }
 }

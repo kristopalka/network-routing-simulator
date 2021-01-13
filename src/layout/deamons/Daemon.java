@@ -1,13 +1,24 @@
 package layout.deamons;
 
-public  class Daemon
-{
-    protected int pritority;
+import layout.components.Package;
+import layout.components.Socket;
 
-    public Package processPackage(Package p)
+import java.util.HashMap;
+
+public abstract class Daemon
+{
+    public boolean processPackage(Package p)
     {
+        // if solved
+        // send and return null
 
         // if not solved
-        return p;
+        return false;
+    }
+
+    public void processOwnTasks()
+    {
+        // if do nothing
+        return;
     }
 }

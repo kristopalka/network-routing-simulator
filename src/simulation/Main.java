@@ -2,48 +2,62 @@ package simulation;
 
 import gui.*;
 import java.util.ArrayList;
+
+import layout.Layout;
+import layout.components.Package;
 import layout.devices.*;
+import tools.IPConverter;
 
 public class Main {
-    /*Router r1 = new Router("r1", 5);
-        Router r2 = new Router("r2", 2);
-
-        Layout l = new Layout();
-        l.addRouter(r1);
-        l.addRouter(r2);
-
-        String log = "";
-
-        log += l.connect(r1.getSocket("0"), r2.getSocket("0"));
-        log += l.disconnect(r1.getSocket("0"), r2.getSocket("0"));
-        log += l.connect(r1.getSocket("0"), r2.getSocket("1"));
-
-
-        System.out.println(log);
-
-        Simulation sim = new Simulation(l.cloneDevices());
-        sim = null;
-
-
-
-        Simulation sim2 = new Simulation(l.cloneDevices());*/
 
     private ArrayList<Router> routers;
     private MainFrame mainFrame; 
 
-    public static void main(String[] args) {
-        
-        Main mainProgram = new Main();
-        
-        mainProgram.mainFrame = new MainFrame();
-        mainProgram.mainFrame.setSize(1280, 720);
-        mainProgram.mainFrame.setVisible(true);
-        
-//        Router4 r = new Router4("Router");
-//        Thread t = new Thread(r);
-//        t.start();
-//        r.showConsole();
-//        
+    public static void main(String[] args)
+    {
+        Layout l = new Layout();
+
+
+        // --------------------------------- building layout ---------------------------------
+        l.addRouter(new PC("PC1"));
+        l.addRouter(new PC("PC2"));
+
+        l.addRouter(new Router3("R1"));
+
+        l.connect(l.router("R1").socket("red"), l.router("PC1").socket("blue"));
+        l.connect(l.router("R1").socket("green"), l.router("PC2").socket("blue"));
+
+        // --------------------------------- configuring routers ---------------------------------
+
+        l.router("R1").socket("red").setAddress("192.168.0.1");
+        l.router("R1").socket("red").setNetmask(24);
+
+        l.router("PC1").socket("blue").setAddress("192.168.0.2");
+        l.router("PC1").socket("blue").setNetmask(24);
+
+
+        l.router("R1").socket("red").setAddress("192.168.1.1");
+        l.router("R1").socket("red").setNetmask(24);
+
+        l.router("PC2").socket("blue").setAddress("192.168.1.2");
+        l.router("PC2").socket("blue").setNetmask(24);
+
+        // --------------------------------- starting routers ---------------------------------
+
+        Thread r1 = new Thread(l.router("R1"));
+        Thread pc1 = new Thread(l.router("PC1"));
+        Thread pc2 = new Thread(l.router("PC2"));
+        r1.start();
+        pc1.start();
+        pc2.start();
+
+
+        // --------------------------------- sending package ---------------------------------
+
+        Package p = new Package("192.168.0.2", "192.168.1.2", "package :)");
+
+        l.router("PC1").socket("blue").sendPackageThruPort(p);
+
     }
     
     public static String getInfo() {

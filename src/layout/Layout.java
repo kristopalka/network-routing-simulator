@@ -23,6 +23,7 @@ public class Layout
         return devices.get(routerID);
     }
 
+
     // ------------------------------------ configure  ------------------------------------
 
     public String addRouter(Router r)

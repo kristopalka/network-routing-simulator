@@ -1,5 +1,7 @@
 package layout.components;
 
+import tools.IPConverter;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -9,8 +11,9 @@ public class Socket
     private String socketID;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
-    protected long address;                //todo obsługa błędów, nienależenie do tej samej sieci, itd
-    protected long netmask;                //todo gettery, settery
+
+    private long address;
+    private long netmask;
 
     // ------------------------------------ constructors ------------------------------------
 
@@ -21,9 +24,10 @@ public class Socket
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
 
-        //todo set up starting parameters
-        //address = ;
-        //netmask = ;
+
+        //todo starting addresses??????
+        address = IPConverter.strToNum("0.0.0.0");
+        netmask = IPConverter.getMask(32);
     }
 
 
@@ -35,6 +39,16 @@ public class Socket
 
     public Socket getOuterSocket() { return outerSocket; }
 
+    public long getAddress()
+    {
+        return address;
+    }
+
+    public long getNetmask()
+    {
+        return netmask;
+    }
+
     // ------------------------------------ setters ------------------------------------
 
     public void setOuterSocket(Socket outerSocket)
@@ -42,15 +56,31 @@ public class Socket
         this.outerSocket = outerSocket;
     }
 
+    public void setAddress(String address)
+    {
+        this.address = IPConverter.strToNum(address);
+    }
+
+    public void setNetmask(String netmask)
+    {
+        this.netmask = IPConverter.strToNum(netmask);
+    }
+
+    public void setNetmask(int length)
+    {
+        this.netmask = IPConverter.getMask(length);
+    }
+
 
     // ------------------------------------ sending and receiving packages ------------------------------------
 
     public void sendPackageThruPort(Package p)
     {
+        p.addToRoute(getPathID());
         outerSocket.pushPackageToBuff(p);
     }
 
-    public void pushPackageToBuff(Package p)
+    private void pushPackageToBuff(Package p)
     {
         try
         {
@@ -64,15 +94,13 @@ public class Socket
 
     public Package receivePackageFromPort()
     {
-        try
+        Package p = inputBuff.poll();
+        if(p != null)
         {
-            return inputBuff.poll();
+            p.addToRoute(getPathID());
+            return p;
         }
-        catch(Exception e)
-        {
-            System.out.println("Cannot get package from buffer: " + e.getMessage());
-            return null;
-        }
+        else return null;
     }
 
     public void clearBuff()

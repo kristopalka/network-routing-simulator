@@ -1,9 +1,15 @@
 package layout.deamons;
 
+import layout.components.Socket;
+
+import java.util.HashMap;
+
 public class RIP extends Daemon
 {
-    public RIP()
+    private HashMap<String, Socket> sockets;
+
+    public RIP(HashMap<String, Socket> sockets)
     {
-        this.pritority = 200;
+        this.sockets = sockets;
     }
 }
