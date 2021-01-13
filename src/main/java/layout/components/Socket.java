@@ -9,8 +9,8 @@ public class Socket
     private String socketID;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
-    private long address;                //TODO obsługa błędów, nienależenie do tej samej sieci, itd
-    private long netmask;                //TODO gettery, settery
+    protected long address;                //todo obsługa błędów, nienależenie do tej samej sieci, itd
+    protected long netmask;                //todo gettery, settery
 
     // ------------------------------------ constructors ------------------------------------
 
@@ -20,6 +20,10 @@ public class Socket
         this.socketID = socketID;
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
+
+        //todo set up starting parameters
+        //address = ;
+        //netmask = ;
     }
 
 
@@ -27,7 +31,7 @@ public class Socket
 
     public String getID() { return socketID; }
 
-    public String getPath() { return routerID + "." + socketID; }
+    public String getPathID() { return routerID + "." + socketID; }
 
     public Socket getOuterSocket() { return outerSocket; }
 

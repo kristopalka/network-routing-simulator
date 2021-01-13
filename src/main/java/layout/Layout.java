@@ -1,6 +1,6 @@
 package layout;
 
-import layout.components.router.Router;
+import layout.components.routerTypes.Router;
 import layout.components.Socket;
 
 import java.util.HashMap;
@@ -51,11 +51,11 @@ public class Layout
     {
         if(s1 == null) return "Cannot connect, first socket is null";
         if(s2 == null) return "Cannot connect, second socket is null";
-        if(s1.getOuterSocket() != null ) return "Cannot connect, " + s1.getPath() + " is occupied";
-        if(s2.getOuterSocket() != null ) return "Cannot connect, " + s2.getPath() + " is occupied";
+        if(s1.getOuterSocket() != null ) return "Cannot connect, " + s1.getPathID() + " is occupied";
+        if(s2.getOuterSocket() != null ) return "Cannot connect, " + s2.getPathID() + " is occupied";
         s1.setOuterSocket(s2);
         s2.setOuterSocket(s1);
-        return "Connected successfully: " + s1.getPath() + " - " + s2.getPath();
+        return "Connected successfully: " + s1.getPathID() + " - " + s2.getPathID();
     }
 
     public String disconnect(Socket s1, Socket s2)
@@ -63,7 +63,7 @@ public class Layout
         if(s1.getOuterSocket() != s2 || s2.getOuterSocket() != s1) return "Cannot disconnect, this sockets are not connected";
         s1.setOuterSocket(null);
         s2.setOuterSocket(null);
-        return "Disconnected successfully: " + s1.getPath() + " - " + s2.getPath();
+        return "Disconnected successfully: " + s1.getPathID() + " - " + s2.getPathID();
     }
 
     public String repairUniformity(boolean returnLog)
@@ -78,7 +78,7 @@ public class Layout
                 if(socket.getOuterSocket() == null) {}
                 else if(socket != socket.getOuterSocket().getOuterSocket())
                 {
-                    log += socket.getPath() + " pointed " + socket.getOuterSocket().getPath() + "\n";
+                    log += socket.getPathID() + " pointed " + socket.getOuterSocket().getPathID() + "\n";
                     socket.setOuterSocket(null);
                 }
             }
@@ -100,7 +100,7 @@ public class Layout
             for(Socket socket : sockets.values())
             {
                 if(socket.getOuterSocket() == null)  log += "    " + socket.getID() + "\n";
-                else  log += "    " + socket.getID() + " -> " + socket.getOuterSocket().getPath() + "\n";
+                else  log += "    " + socket.getID() + " -> " + socket.getOuterSocket().getPathID() + "\n";
             }
         }
 

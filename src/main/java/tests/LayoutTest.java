@@ -1,8 +1,7 @@
 package tests;
 
-import layout.components.router.PC;
-import layout.components.router.Router;
-import layout.components.router.Router3;
+import layout.components.routerTypes.PC;
+import layout.components.routerTypes.Router3;
 import org.junit.jupiter.api.Test;
 import layout.Layout;
 

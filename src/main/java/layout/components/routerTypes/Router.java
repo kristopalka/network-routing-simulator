@@ -1,4 +1,4 @@
-package layout.components.router;
+package layout.components.routerTypes;
 
 import gui.ConsoleFrame;
 import layout.components.Config;
@@ -18,21 +18,6 @@ public abstract class Router implements Runnable
 
 
     // ------------------------------------ constructors ------------------------------------
-
-    private Router(String routerID, int numberOfSockets)
-    {
-        this.routerID = routerID;
-        this.powerOn = false;
-        sockets = new HashMap<>();
-        console = new ConsoleFrame(routerID);
-        config = new Config();
-
-        for(int i=0; i<numberOfSockets; i++)
-        {
-            String socketID = String.valueOf(i);
-            sockets.put(socketID, new Socket(socketID, routerID));
-        }
-    }
 
     protected Router(String routerID, ArrayList<String> socketsNames)  // socket names: names of color in HTML eg: green, lime, maroon
     {
@@ -95,7 +80,13 @@ public abstract class Router implements Runnable
     
     public void processPackage(Package p)
     {
-        //TODO: decide and do something
+        //TODO: decide what to do
+
+        // own ports
+        for(HashMap.Entry<String, Socket> one : sockets.entrySet())
+        {
+            one.getValue().clearBuff();
+        }
     }
 
 
