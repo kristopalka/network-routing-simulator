@@ -8,7 +8,9 @@ import layout.components.Package;
 import layout.devices.*;
 import tools.IPConverter;
 
-public class Main {
+public class Main
+{
+
 
     private ArrayList<Router> routers;
     private MainFrame mainFrame; 

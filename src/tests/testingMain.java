@@ -4,6 +4,9 @@ import layout.Layout;
 import layout.components.Package;
 import layout.devices.PC;
 import layout.devices.Router3;
+import tools.Connection;
+
+import java.util.ArrayList;
 
 public class testingMain
 {
@@ -22,6 +25,12 @@ public class testingMain
         l.connect(l.router(1).socket("blue"), l.router(2).socket("blue"));
         l.connect(l.router(2).socket("red"), l.router(3).socket("red"));
         l.connect(l.router(3).socket("blue"), l.router(4).socket("blue"));
+
+        ArrayList<Connection> a = l.getConnectionsInfo();
+        for(Connection c : a)
+        {
+            System.out.println(c.toString());
+        }
 
         // --------------------------------- configuring routers ---------------------------------
 

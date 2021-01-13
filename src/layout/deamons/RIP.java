@@ -12,4 +12,11 @@ public class RIP extends Daemon
     {
         this.sockets = sockets;
     }
+
+    @Override
+    public String config(String order)
+    {
+        //TODO
+        return null;
+    }
 }

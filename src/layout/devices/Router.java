@@ -1,13 +1,14 @@
 package layout.devices;
 
 import gui.ConsoleFrame;
+import layout.components.Config;
 import layout.components.Package;
 import layout.components.Socket;
 import layout.deamons.*;
 
 import java.util.*;
 
-public abstract class Router implements Runnable
+public abstract class Router implements Runnable, Config
 {
     private String routerName;
     protected int routerID;
@@ -35,7 +36,7 @@ public abstract class Router implements Runnable
 
         for(String socketName : socketsNames)
         {
-            sockets.put(socketName, new Socket(socketName, routerName));
+            sockets.put(socketName, new Socket(socketName, this));
         }
     }
 
@@ -68,7 +69,7 @@ public abstract class Router implements Runnable
 
     public void setName(String routerName)
     {
-        //todo /////////////////////////////////////////////////////////////////////////////////////<<<<<<<<<<
+        this.routerName = routerName;
     }
 
     // ------------------------------------ run ------------------------------------
@@ -189,5 +190,12 @@ public abstract class Router implements Runnable
     public void showConsole() { console.setVisible(true); }
 
     public void hideConsole() { console.setVisible(false); }
+
+    @Override
+    public String config(String order)
+    {
+        //TODO
+        return null;
+    }
 
 }

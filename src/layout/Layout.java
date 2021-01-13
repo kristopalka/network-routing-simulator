@@ -2,7 +2,10 @@ package layout;
 
 import layout.devices.*;
 import layout.components.Socket;
+import tools.Connection;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Layout
@@ -90,22 +93,30 @@ public class Layout
     }
 
 
-    public String getConnectionsInfo()
+    public ArrayList<Connection> getConnectionsInfo()
     {
-        String log = "";
-        for (Router router : devices.values())
-        {
-            log += router.getID() + ":\n";
-            HashMap<String, Socket> sockets = router.getAllSockets();
+        HashMap<String, Connection> connections = new HashMap<>();
 
-            for(Socket socket : sockets.values())
+        for (Router r : devices.values())
+        {
+            HashMap<String, Socket> sockets = r.getAllSockets();
+
+            for(Socket s : sockets.values())
             {
-                if(socket.getOuterSocket() == null)  log += "    " + socket.getName() + "\n";
-                else  log += "    " + socket.getName() + " -> " + socket.getOuterSocket().getFullName() + "\n";
+                if(s.getOuterSocket() != null)
+                {
+                    Socket s2 = s.getOuterSocket();
+                    Connection c = new Connection(r.getID(),s.getName(), s2.getParentID(), s2.getName());
+
+                    if(!connections.containsKey(s2.getFullName()))
+                    {
+                        connections.put(s.getFullName(), c);
+                    }
+                }
             }
         }
-
-        return "Connections info:\n" + log + "\n";
+        ArrayList<Connection> array = new ArrayList(connections.values());
+        return array;
     }
 
 }

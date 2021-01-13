@@ -1,25 +1,26 @@
 package layout.components;
 
+import layout.devices.Router;
 import tools.IPConverter;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Socket
+public class Socket implements Config
 {
-    private String routerName;
     private String socketName;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
+    private Router parentRouter;
 
     private long address;
     private long netmask;
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Socket(String socketName, String routerName)
+    public Socket(String socketName, Router parentRouter)
     {
-        this.routerName = routerName;
+        this.parentRouter = parentRouter;
         this.socketName = socketName;
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
@@ -34,7 +35,9 @@ public class Socket
 
     public String getName() { return socketName; }
 
-    public String getFullName() { return routerName + "." + socketName; }
+    public String getFullName() { return parentRouter.getName() + "." + socketName; }
+
+    public int getParentID() { return parentRouter.getID(); }
 
     public Socket getOuterSocket() { return outerSocket; }
 
@@ -55,10 +58,6 @@ public class Socket
         this.outerSocket = outerSocket;
     }
 
-    public void setAddress(String address)
-    {
-        this.address = IPConverter.strToNum(address);
-    }
 
     public void setAddress(String address, int netmask)
     {
@@ -66,12 +65,17 @@ public class Socket
         this.netmask = IPConverter.getMask(netmask);
     }
 
-    public void setNetmask(String netmask)
+    private void setAddress(String address)
+    {
+        this.address = IPConverter.strToNum(address);
+    }
+
+    private void setNetmask(String netmask)
     {
         this.netmask = IPConverter.strToNum(netmask);
     }
 
-    public void setNetmask(int length)
+    private void setNetmask(int length)
     {
         this.netmask = IPConverter.getMask(length);
     }
@@ -113,4 +117,10 @@ public class Socket
         inputBuff.clear();
     }
 
+    @Override
+    public String config(String order)
+    {
+        //TODO
+        return null;
+    }
 }

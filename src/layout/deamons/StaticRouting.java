@@ -44,4 +44,11 @@ public class StaticRouting extends Daemon
         long netmask = IPConverter.strToNum(mask);
         routes.removeIf(route -> route.netmask == netmask && route.address == address);
     }
+
+    @Override
+    public String config(String order)
+    {
+        //TODO
+        return null;
+    }
 }

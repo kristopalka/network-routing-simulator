@@ -1,7 +1,6 @@
 package layout.components;
 
-public class Config
+public interface Config
 {
-    //todo: can generate config from routers and daemons
-
+    public String config(String order);
 }
