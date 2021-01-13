@@ -6,6 +6,8 @@ import javax.swing.ImageIcon;
 import tools.ImageIconGetter;
 
 public class MainFrame extends javax.swing.JFrame {
+    
+    ImageIconGetter iig;
 
     public MainFrame() {
         
@@ -13,11 +15,10 @@ public class MainFrame extends javax.swing.JFrame {
         this.setMinimumSize(new Dimension(640, 480));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
+        iig = new ImageIconGetter();
+        
         initComponents();
         
-//        init Icons:
-        
-        //ImageIconGetter iig = new ImageIconGetter();
         
         
     }
@@ -59,20 +60,25 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem14 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(640, 480));
+        setMinimumSize(new java.awt.Dimension(960, 720));
+        setPreferredSize(new java.awt.Dimension(960, 720));
 
         addingPanel.setBackground(new java.awt.Color(200, 200, 200));
-        addingPanel.setMinimumSize(new java.awt.Dimension(256, 128));
+        addingPanel.setMinimumSize(new java.awt.Dimension(256, 512));
         addingPanel.setPreferredSize(new java.awt.Dimension(256, 512));
         addingPanel.setLayout(new java.awt.GridLayout(4, 1));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/png/router4.png"))); // NOI18N
-        jLabel1.setText("4-socket router");
+        jLabel1.setIcon(iig.getIcon("router4.png", 120));
+        jLabel1.setToolTipText("4-socket router");
+        jLabel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "4-socket router", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
+        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         addingPanel.add(jLabel1);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("3-socket router");
+        jLabel3.setIcon(iig.getIcon("router3.png", 120));
+        jLabel3.setToolTipText("3-socket router");
+        jLabel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "3-socket router", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         addingPanel.add(jLabel3);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -91,11 +97,11 @@ public class MainFrame extends javax.swing.JFrame {
         simulationPanel.setLayout(simulationPanelLayout);
         simulationPanelLayout.setHorizontalGroup(
             simulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 584, Short.MAX_VALUE)
+            .addGap(0, 732, Short.MAX_VALUE)
         );
         simulationPanelLayout.setVerticalGroup(
             simulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 478, Short.MAX_VALUE)
+            .addGap(0, 535, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(simulationPanel);
