@@ -202,5 +202,18 @@ public abstract class Router implements Runnable, Config
 
         return null;
     }
+    
+    public ArrayList<String> notConnectedPorts(int routerID)
+    {
+        ArrayList<String> free = new ArrayList<>();
+        Router r = router(routerID);
+
+        for(Socket socket : r.getAllSockets().values())
+        {
+            if(socket.isFree()) free.add(socket.getName());
+        }
+
+        return free;
+    }
 
 }

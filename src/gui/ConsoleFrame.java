@@ -5,8 +5,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.Consumer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -21,6 +19,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
         this.printInfo(routerName + " has started.\n");
+        this.setLocationByPlatform(true);
     }
 
     @SuppressWarnings("unchecked")

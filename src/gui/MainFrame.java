@@ -41,6 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
         iig = new ImageIconGetter();
         screenMap = new HashMap<>();
         initComponents();
+        this.setLocationByPlatform(true);
         
     }
     
@@ -121,7 +122,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         simulationScroll = new javax.swing.JScrollPane();
-        simulationPanel = new javax.swing.JPanel();
+        simulationPanel = new SimulationPanel();
         statusLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();

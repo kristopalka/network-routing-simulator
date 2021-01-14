@@ -1,11 +1,14 @@
 //package gui;
 //
 //import java.awt.BasicStroke;
+//import java.awt.Color;
 //import java.awt.Graphics;
 //import java.awt.Graphics2D;
 //import java.awt.Point;
 //import java.awt.RenderingHints;
 //import java.awt.Stroke;
+//import java.awt.event.MouseEvent;
+//import java.awt.event.MouseListener;
 //import java.awt.geom.Line2D;
 //import javax.swing.JComponent;
 //
@@ -14,60 +17,41 @@
 //    // stroke of the line
 //    private Stroke spessore =  new BasicStroke(SPESSORE);
 //
-//    private double x, y, x_2, y_2;
+//    private Point start, end;
 //
-//    public Path(double x, double y) {
+//    public Path(int x, int y) {
 //            super();
 //
-//            this.x = x;
-//            this.y = y;
-//
-//            this.x_2 = x;
-//            this.y_2 = y;
-//
-//            updateBoundsAndSize(zoom);
+//            this.start = new Point(x, y);
+//            this.end = new Point(x, y);
 //
 //            // this was only for test...
-//            this.addMouseListener(new MouseListener(){
+//            this.addMouseListener(new MouseListener() {
+//                @Override
+//                public void mouseClicked(MouseEvent arg0) {
+//                    System.out.println("CLICK!");
+//                }
 //
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            System.out.println("CLICK!");
-//                    }
+//                @Override
+//                public void mousePressed(MouseEvent e) {
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
+//
+//                @Override
+//                public void mouseReleased(MouseEvent e) {
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
+//
+//                @Override
+//                public void mouseEntered(MouseEvent e) {
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
+//
+//                @Override
+//                public void mouseExited(MouseEvent e) {
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
 //            });
-//    }
-//
-//    // this function is called during the mouse dragging for drow the line.
-//    // it gets the coordinates, convert them, save them and update the bounds and 
-//    // size of the object
-//    public void setArrivePoint(Point a, ZoomManager zoom) {
-//            Point p = DrawableObjects.getScaledCoordinates(a.x, a.y, zoom);
-//            this.x_2 = p.x;
-//            this.y_2 = p.y;
-//            updateBoundsAndSize(zoom);
-//    }
-//
-//    // update the bounds of the object, the origin point of the rectangle is the
-//    // top-left coordinate build with the original coordinates. The width and height of the rectangle are obtained by subtraction. 
-//    private void updateBoundsAndSize(ZoomManager zoom) {
-//
-//            Point p = DrawableObjects.getPanelCoordinates(x, y, zoom);
-//            Point a = DrawableObjects.getPanelCoordinates(x_2, y_2, zoom);
-//
-//            int min_x = (int)Math.min(p.x, a.x) - SPESSORE;
-//            int min_y = (int)Math.min(p.y, a.y) - SPESSORE;
-//
-//            if (min_x < 0)
-//                    min_x =0;
-//
-//            if (min_y < 0)
-//                    min_y = 0;
-//
-//            int w = (int) (Math.max(a.x, p.x) - min_x) + SPESSORE;
-//            int h = (int) (Math.max(a.y, p.y) - min_y) + SPESSORE;
-//
-//            setBounds(new Rectangle(min_x, min_y, w, h));
-//            repaint();
 //    }
 //
 //    // drawing function   
@@ -79,8 +63,7 @@
 //        Graphics2D antiAlias = (Graphics2D) g;
 //        antiAlias.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 //
-//        antiAlias.setColor(DEFAULT_COLOR);
-//        antiAlias.setStroke(spessore);
+//        antiAlias.setColor(Color.red);
 //
 //        Line2D line = new Line2D.Double(coordinates[0], coordinates[1]);
 //
@@ -92,8 +75,8 @@
 //
 //        Point[] output = new Point[2];
 //
-//        Point p = new Point((int) this.x, (int) this.y);
-//        Point a = new Point((int) this.x_2, (int) this.y_2);
+//        Point p = new Point(start);
+//        Point a = new Point(end);
 //
 //        double o_x = this.getBounds().getCenterX();
 //        double o_y = this.getBounds().getCenterY();
@@ -112,3 +95,4 @@
 //
 //            return new Point((int)new_x, (int)new_y);
 //    }
+//}
