@@ -260,7 +260,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="iig.getIcon(&quot;router4.png&quot;, 120)" type="code"/>
+              <Connection code="iig.getIcon(&quot;router4.png&quot;, 100)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Add 4-socket router"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -282,7 +282,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="iig.getIcon(&quot;router3.png&quot;, 120)" type="code"/>
+              <Connection code="iig.getIcon(&quot;router3.png&quot;, 100)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Add 3-socket router"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -303,7 +303,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="iig.getIcon(&quot;pc.png&quot;, 120)" type="code"/>
+              <Connection code="iig.getIcon(&quot;pc.png&quot;, 100)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Add PC"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -324,7 +324,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="iig.getIcon(&quot;link.png&quot;, 120)" type="code"/>
+              <Connection code="iig.getIcon(&quot;link.png&quot;, 100)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Add link"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">

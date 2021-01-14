@@ -6,75 +6,49 @@ public class Package
 {
     public long source;
     public long destination;
-    public int TTL = 32;
-    public int ID = 0;
-    public String type;
+
+    final public static int TTLmax = 32;
+    public int TTL = TTLmax;
+    public long time = 0;
+    public String type = "";
+
     public String log = "";
     public Object information;
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Package(long sourceID, long destinationID, Object information)
+    public Package(long sourceID, long destinationID)
     {
         this.source = sourceID;
         this.destination = destinationID;
-        this.information = information;
     }
-
-    public Package(String sourceID, String destinationID, Object information)
-    {
-        this.source = IPConverter.strToNum(sourceID);
-        this.destination = IPConverter.strToNum(destinationID);
-        this.information = information;
-    }
-
-    public Package(String sourceID, String destinationID, Object information, int ID)
-    {
-        this.source = IPConverter.strToNum(sourceID);
-        this.destination = IPConverter.strToNum(destinationID);
-        this.information = information;
-        this.ID = ID;
-    }
-
 
     // ------------------------------------ getters ------------------------------------
-
-    public Object getInformation()
-    {
-        return information;
-    }
-
-    public int getID() { return ID; }
-
-    public long getSource()
-    {
-        return source;
-    }
-
-    public long getDestination()
-    {
-        return destination;
-    }
 
     public String getLog() { return "(" + log + ")"; }
 
     @Override
     public String toString()
     {
-        return "(\"" + information.toString() + "\" from " + IPConverter.numToStr(source) + " to " + IPConverter.numToStr(destination) + ")";
+        return "{from: " + IPConverter.numToStr(source) + "  to: " + IPConverter.numToStr(destination) + "  type: "+ type + "}";
     }
 
     public String toStringExtend()
     {
-        return "{\n" +
-                "   value: \"" + information.toString() + "\"\n" +
+        String info;
+        try { info = information.toString(); }
+        catch(Exception e) { info = ""; }
+        return  "{\n" +
                 "   source: " + IPConverter.numToStr(source) + "\n" +
                 "   destination: " + IPConverter.numToStr(destination) + "\n" +
                 "   TTL: " + TTL + "\n" +
-                "}\n";
+                "   sended time: \"" + time + "\"\n" +
+                "   type: \"" + type + "\"\n" +
+                "   log: \"" + log + "\"\n" +
+                "   value: {" + info + "}\n" +
+                "}";
     }
 
-    public int getTTL() { return TTL; }
 
     // ------------------------------------ setters ------------------------------------
 
@@ -83,7 +57,5 @@ public class Package
         log = log + " -> " + portID;
         TTL--;
     }
-
-    public void onStart(String log) { this.log = log; }
 
 }

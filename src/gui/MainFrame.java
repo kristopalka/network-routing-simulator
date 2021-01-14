@@ -31,9 +31,11 @@ public class MainFrame extends javax.swing.JFrame {
     private int actualMode;
     private Layout layout;
     private HashMap<Integer, JDeviceLabel> screenMap;
+    public static MainFrame INSTANCE;
 
     public MainFrame(Layout layout) {
         
+        INSTANCE = this;
         this.setTitle("Project Simulation");
         this.setMinimumSize(new Dimension(640, 480));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -43,9 +45,13 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         this.setLocationByPlatform(true);
         
+        
     }
     
     private void refreshMap() {
+        
+        simulationPanel.revalidate();
+        simulationPanel.repaint();
         
     }
     
@@ -53,8 +59,6 @@ public class MainFrame extends javax.swing.JFrame {
         if(this.actualMode == 5) {
             this.layout.remRouter(routerID);
             this.simulationPanel.remove(screenMap.get(routerID));
-            this.simulationPanel.revalidate();
-            this.simulationPanel.repaint();
             this.refreshMap();
             this.setActualMode(this.actualMode);
         }
@@ -79,7 +83,7 @@ public class MainFrame extends javax.swing.JFrame {
         };
     }
     
-    private void setActualMode(int i) {
+    public void setActualMode(int i) {
         if(actualMode != i) {
             this.actualMode = i;
         } else {
@@ -169,7 +173,7 @@ public class MainFrame extends javax.swing.JFrame {
         addingPanel.setLayout(new java.awt.GridLayout(4, 1));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(iig.getIcon("router4.png", 120));
+        jLabel1.setIcon(iig.getIcon("router4.png", 100));
         jLabel1.setToolTipText("Add 4-socket router");
         jLabel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "4-socket router", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -183,7 +187,7 @@ public class MainFrame extends javax.swing.JFrame {
         addingPanel.add(jLabel1);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(iig.getIcon("router3.png", 120));
+        jLabel3.setIcon(iig.getIcon("router3.png", 100));
         jLabel3.setToolTipText("Add 3-socket router");
         jLabel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "3-socket router", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -196,7 +200,7 @@ public class MainFrame extends javax.swing.JFrame {
         addingPanel.add(jLabel3);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setIcon(iig.getIcon("pc.png", 120));
+        jLabel4.setIcon(iig.getIcon("pc.png", 100));
         jLabel4.setToolTipText("Add PC");
         jLabel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "PC", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -209,7 +213,7 @@ public class MainFrame extends javax.swing.JFrame {
         addingPanel.add(jLabel4);
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(iig.getIcon("link.png", 120));
+        jLabel5.setIcon(iig.getIcon("link.png", 100));
         jLabel5.setToolTipText("Add link");
         jLabel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Add link", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -538,6 +542,10 @@ public class MainFrame extends javax.swing.JFrame {
         
         return("TO DO EXPORT");
         
+    }
+
+    public void addLink(int routerID, String socketID) {
+        System.out.println('h');
     }
     
     // file filter for .json files

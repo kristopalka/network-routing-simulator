@@ -18,7 +18,7 @@ public class Router4 extends Router
             add("yellow");
         }});
 
-        daemonStatic = new StaticRouting();
+        daemonStatic = new StaticRouting(sockets);
         daemonRIP = new RIP(sockets);
     }
 }

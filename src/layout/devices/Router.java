@@ -5,12 +5,14 @@ import layout.components.Config;
 import layout.components.Package;
 import layout.components.Socket;
 import layout.deamons.*;
+import tools.IPConverter;
+import tools.InputAnalyzer;
 
 import java.util.*;
 
 public abstract class Router implements Runnable, Config
 {
-    private String routerName;
+    protected String routerName;
     protected int routerID;
     protected HashMap<String, Socket> sockets = new HashMap<>();
     protected ConsoleFrame console;
@@ -18,14 +20,12 @@ public abstract class Router implements Runnable, Config
     protected boolean isRunning = true;
     protected boolean printStat = true;
     protected int tickTime = 1000;
-    protected int timeFromStart = 0;
+    protected long timeFromStart = 0;
 
-
-
-    public IsForMe daemonForMe = new IsForMe(sockets);
+    public ForMe daemonForMe = new ForMe(sockets);
     public SelfPorts daemonSelf = new SelfPorts(sockets);
-    public StaticRouting daemonStatic = null;
-    public RIP daemonRIP = null;
+    public StaticRouting daemonStatic = new StaticRouting(sockets);
+    public RIP daemonRIP = new RIP(sockets);
     public Garbage daemonGarbage = new Garbage();
 
 
@@ -36,7 +36,10 @@ public abstract class Router implements Runnable, Config
         this.routerName = routerName;
         this.routerID = routerID;
         console = new ConsoleFrame(routerName);
-
+        console.commands = inputText ->
+        {
+            // operacja na tekście z inputu, 'inputText' jest stringiem
+        };
 
         for(String socketName : socketsNames)
         {
@@ -64,21 +67,13 @@ public abstract class Router implements Runnable, Config
         return sockets.get(socketID);
     }
 
-    public int getTimeFromStart()
-    {
-        return timeFromStart;
-    }
 
     // ------------------------------------ getters ------------------------------------
 
-    public void setName(String routerName)
-    {
-        this.routerName = routerName;
-    }
-
     public void stopThread() { this.isRunning = false; }
 
-    // ------------------------------------ run ------------------------------------
+
+    // ------------------------------------ main loop ------------------------------------
 
     @Override
     public void run()
@@ -89,8 +84,6 @@ public abstract class Router implements Runnable, Config
 
         while(isRunning)
         {
-            if(printStat) System.out.println(routerName + ": ~");
-
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
@@ -98,8 +91,8 @@ public abstract class Router implements Runnable, Config
                 Package p = s.receivePackageFromPort();
                 if(p != null)
                 {
-                    String log = proceedPackage(p);
-                    if(printStat) System.out.println(routerName + ": received package " + p.toString() + " " + log);
+                    if(printStat) System.out.print(routerName + ": received package " + p.toString());
+                    proceedPackage(p);
                 }
             }
 
@@ -118,57 +111,72 @@ public abstract class Router implements Runnable, Config
 
     public void sendPackage(Package p)
     {
-        p.onStart("From " + routerName);
-        String log = proceedPackage(p);
-        System.out.println(routerName + ": send package " + p.toString() + " " + log);
+        System.out.print(routerName + ": " + p.toString());
+        proceedPackage(p);
     }
 
-
-
-    private String proceedPackage(Package p)
+    protected void proceedPackage(Package p)
     {
-        String log = "";
-
+        if(p.TTL <= 0)
+        {
+            System.out.println( " TTL=0" + p.getLog());
+            return;
+        }
         if(daemonForMe.processPackage(p))
         {
-            log += "for me " + p.getLog();
+            System.out.println(" get FOR ME");
             packageForMe(p);
-            return log;
+            return;
         }
-
         if(daemonSelf.processPackage(p))
         {
-            log += "send by CONNECTED PORTS";
-            return log;
+            System.out.println( " send by CONNECTED PORTS");
+            return;
         }
-
         if(daemonStatic.processPackage(p))
         {
-            log += "send by STATIC ROUTING";
-            return log;
+            System.out.println( " send by STATIC ROUTING");
+            return;
         }
-
         if(daemonRIP.processPackage(p))
         {
-            log += "send by RIP";
-            return log;
+            System.out.println( " send by RIP");
+            return;
         }
 
         daemonGarbage.processPackage(p);
-        log += "CANNOT SEND " + p.getLog();
-        return log;
+        System.out.println( " cannot send" + p.getLog());
     }
 
-    private void packageForMe(Package p)
+    protected void packageForMe(Package p)
     {
-        if(p.getInformation().toString() == "ping")
+        switch (p.type)
         {
-            Package re = new Package(p.getDestination(), p.getSource(), "ping repy");
-            sendPackage(re);
+            case "ping":
+            {
+                System.out.println(this.routerName + ": ping me: generating answer ");
+                Package ping = new Package(p.destination, p.source);
+                ping.time = p.time;
+                ping.type = "ping-answer";
+
+                sendPackage(ping);
+                return;
+            }
+            case "ping-answer":
+            {
+                System.out.println(this.routerName + ": ping answer for me:\n" + p.toStringExtend());
+
+                //todo print ping answer on graphic console
+                return;
+            }
+            default:
+            {
+                return;
+            }
         }
     }
 
-    private void clearSockets()
+    protected void clearSockets()
     {
         for(HashMap.Entry<String, Socket> one : sockets.entrySet())
         {
@@ -184,36 +192,84 @@ public abstract class Router implements Runnable, Config
 
     public void hideConsole() { console.setVisible(false); }
 
+    // ------------------------------------ config ------------------------------------
+
+    public String configure(String input)
+    {
+        String[] command = InputAnalyzer.parseInputCommand(input);
+        return config(command);
+    }
+
+
     @Override
     public String config(String[] command)
     {
-        if(command[0] == "set")
+        switch (command[0])
         {
-            if(command[1] == "name") this.setName(command[2]);
+            // ----------------- daemond -----------------
+            case "forme":
+                return daemonForMe.config(Arrays.copyOfRange(command, 1, command.length));
+            case "garbage":
+                return daemonGarbage.config(Arrays.copyOfRange(command, 1, command.length));
+            case "rip":
+                return daemonRIP.config(Arrays.copyOfRange(command, 1, command.length));
+            case "selfports":
+                return daemonSelf.config(Arrays.copyOfRange(command, 1, command.length));
+            case "static":
+                return daemonStatic.config(Arrays.copyOfRange(command, 1, command.length));
+
+            // ----------------- sockets -----------------
+            case "interface":
+            case "inter":
+            case "inte":
+            case "int":
+            {
+                Socket s = sockets.get(command[1]);
+                if(s == null) return "There is no socket with specified ID\n";
+                else return s.config(Arrays.copyOfRange(command, 2, command.length));
+            }
+
+            // ----------------- router config -----------------
+            case "set":
+            {
+                switch (command[1])
+                {
+                    case "name":
+                    {
+                        this.routerName = command[2];
+                        return "Name setted\n";
+                    }
+                }
+            }
+            case "show":
+            {
+                switch (command[1])
+                {
+                    case "time":
+                        return Long.toString(timeFromStart/1000) + " [s]\n";
+                    case "name":
+                        return routerName + "\n";
+
+                }
+            }
+            case "ping":
+            {
+                long dest = IPConverter.strToNum(command[1]);
+
+                Package ping = new Package(0, dest);
+                ping.time = this.timeFromStart;
+                ping.type = "ping";
+
+                sendPackage(ping);
+            }
+
+
+            // ----------------- default -----------------
+            default:
+            {
+                return "Invalid input";
+            }
         }
-
-        if(command[0] == "run") ;//todo
-        if(command[0] == "stop") ;//todo
-
-        if(command[0] == "ping")
-        {
-            Package p = new Package(command[1], command[2], command[3], 123);
-        }
-
-        return null;
-    }
-    
-    public ArrayList<String> notConnectedPorts(int routerID)
-    {
-        ArrayList<String> free = new ArrayList<>();
-        Router r = router(routerID);
-
-        for(Socket socket : r.getAllSockets().values())
-        {
-            if(socket.isFree()) free.add(socket.getName());
-        }
-
-        return free;
     }
 
 }

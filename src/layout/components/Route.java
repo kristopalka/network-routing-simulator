@@ -2,6 +2,7 @@ package layout.components;
 
 import layout.components.Socket;
 import layout.devices.Router;
+import tools.IPConverter;
 
 public class Route implements Comparable<Route>
 {
@@ -20,5 +21,11 @@ public class Route implements Comparable<Route>
     public int compareTo(Route o)
     {
         return (int)(o.netmask - this.netmask);
+    }
+
+    @Override
+    public String toString()
+    {
+        return IPConverter.numToStr(address) + " " + IPConverter.numToStr(address) + " -> " + socket.getName();
     }
 }

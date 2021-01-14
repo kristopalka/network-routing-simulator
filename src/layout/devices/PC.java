@@ -1,5 +1,6 @@
 package layout.devices;
 
+import layout.components.Package;
 import layout.components.Socket;
 import layout.deamons.StaticRouting;
 
@@ -16,8 +17,8 @@ public class PC extends Router
         }});
 
         // default gateway
-        this.daemonStatic = new StaticRouting();
-        this.daemonStatic.addRoute("0.0.0.0", "0.0.0.0", socket("blue"));
+        this.daemonStatic = new StaticRouting(sockets);
+        this.daemonStatic.addRoute("0.0.0.0", 0, socket("blue"));
     }
 
 

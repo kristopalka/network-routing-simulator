@@ -16,7 +16,7 @@ public class Router3 extends Router
             add("red");
         }});
 
-        daemonStatic = new StaticRouting();
+        daemonStatic = new StaticRouting(sockets);
         daemonRIP = new RIP(sockets);
     }
 }

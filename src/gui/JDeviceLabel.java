@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 import layout.*;
 
 public class JDeviceLabel extends JLabel {
@@ -17,6 +16,7 @@ public class JDeviceLabel extends JLabel {
     private int yPressed = 0;
     private final int routerID;
     JDevicePopUpMenu menu;
+    JLinkPopUpMenu linkMenu;
     
     public JDeviceLabel(String text, Icon icon, Point location, int routerID, Layout layout) {
         super();
@@ -38,6 +38,8 @@ public class JDeviceLabel extends JLabel {
             @Override
             public void mouseDragged(MouseEvent e){
                 //and when the Jlabel is dragged
+                menu = null;
+                linkMenu = null;
                 setLocation(e.getX() + JDeviceLabel.this.getX() - xPressed, e.getY() + JDeviceLabel.this.getY() - yPressed);
             }
         });
@@ -49,7 +51,7 @@ public class JDeviceLabel extends JLabel {
     }
 
     public void removeSelf() {
-        ((MainFrame) SwingUtilities.getWindowAncestor(this)).deleteRouter(this.routerID);
+        MainFrame.INSTANCE.deleteRouter(this.routerID);
     }
 
     int getID() {
@@ -68,23 +70,29 @@ public class JDeviceLabel extends JLabel {
         }
         
         @Override
-        public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                doPop(e);
+        public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                rightPop(e);
             }
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                leftPop(e);
+            }
+        }
+        @Override
+        public void mousePressed(MouseEvent e) {
+            
             xPressed = e.getX();
             yPressed = e.getY();
             removeSelf();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (e.isPopupTrigger())
-                doPop(e);
             
         }
+        
+        private void leftPop(MouseEvent e) {
+            linkMenu = new JLinkPopUpMenu(l, id);
+            linkMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
 
-        private void doPop(MouseEvent e) {
+        private void rightPop(MouseEvent e) {
             menu = new JDevicePopUpMenu(l, id);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
