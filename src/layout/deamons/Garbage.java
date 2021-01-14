@@ -24,7 +24,7 @@ public class Garbage extends Daemon
     public void clearGaarbage() { garbage.clear(); }
 
     @Override
-    public String config(String order)
+    public String config(String[] command)
     {
         //TODO
         return null;

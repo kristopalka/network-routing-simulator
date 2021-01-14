@@ -118,7 +118,7 @@ public class Socket implements Config
     }
 
     @Override
-    public String config(String order)
+    public String config(String[] command)
     {
         //TODO
         return null;

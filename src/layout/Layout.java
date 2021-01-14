@@ -33,6 +33,10 @@ public class Layout
     {
         if(devices.containsKey(r.getID())) return "Cannot add " + r.getID() + ": specified ID is already here";
 
+
+        Thread thread = new Thread(r);
+        thread.start();
+
         devices.put(r.getID(), r);
         return r.getID() + " added successfully";
     }
@@ -46,6 +50,7 @@ public class Layout
             if(socket.getOuterSocket() != null) { socket.getOuterSocket().setOuterSocket(null); }
         }
 
+        devices.get(routerID).stopThread();
         devices.remove(routerID);
 
         return routerID + " removed successfully";
@@ -70,7 +75,7 @@ public class Layout
         return "Disconnected successfully: " + s1.getFullName() + " - " + s2.getFullName();
     }
 
-    public String repairUniformity(boolean returnLog)
+    private String repairUniformity(boolean returnLog)
     {
         String log = "";
         for (Router router : devices.values())

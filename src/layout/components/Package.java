@@ -4,13 +4,13 @@ import tools.IPConverter;
 
 public class Package
 {
-    private long source;
-    private long destination;
-    private int TTL = 32;
-
-    private Object information;
-    private String log = "";
-
+    public long source;
+    public long destination;
+    public int TTL = 32;
+    public int ID = 0;
+    public String type;
+    public String log = "";
+    public Object information;
 
     // ------------------------------------ constructors ------------------------------------
 
@@ -28,6 +28,14 @@ public class Package
         this.information = information;
     }
 
+    public Package(String sourceID, String destinationID, Object information, int ID)
+    {
+        this.source = IPConverter.strToNum(sourceID);
+        this.destination = IPConverter.strToNum(destinationID);
+        this.information = information;
+        this.ID = ID;
+    }
+
 
     // ------------------------------------ getters ------------------------------------
 
@@ -35,6 +43,8 @@ public class Package
     {
         return information;
     }
+
+    public int getID() { return ID; }
 
     public long getSource()
     {

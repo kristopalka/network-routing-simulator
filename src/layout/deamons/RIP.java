@@ -14,7 +14,7 @@ public class RIP extends Daemon
     }
 
     @Override
-    public String config(String order)
+    public String config(String[] command)
     {
         //TODO
         return null;

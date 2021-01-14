@@ -15,11 +15,15 @@ public abstract class Router implements Runnable, Config
     protected HashMap<String, Socket> sockets = new HashMap<>();
     protected ConsoleFrame console;
 
-    protected boolean isRunning = false;
+    protected boolean isRunning = true;
+    protected boolean printStat = true;
     protected int tickTime = 1000;
     protected int timeFromStart = 0;
 
 
+
+    public IsForMe daemonForMe = new IsForMe(sockets);
+    public SelfPorts daemonSelf = new SelfPorts(sockets);
     public StaticRouting daemonStatic = null;
     public RIP daemonRIP = null;
     public Garbage daemonGarbage = new Garbage();
@@ -72,6 +76,8 @@ public abstract class Router implements Runnable, Config
         this.routerName = routerName;
     }
 
+    public void stopThread() { this.isRunning = false; }
+
     // ------------------------------------ run ------------------------------------
 
     @Override
@@ -81,9 +87,9 @@ public abstract class Router implements Runnable, Config
         clearSockets();
         timeFromStart = 0;
 
-        while(true)
+        while(isRunning)
         {
-            System.out.println(routerName + ": ~");
+            if(printStat) System.out.println(routerName + ": ~");
 
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
@@ -93,7 +99,7 @@ public abstract class Router implements Runnable, Config
                 if(p != null)
                 {
                     String log = proceedPackage(p);
-                    System.out.println(routerName + ": received package " + p.toString() + " " + log);
+                    if(printStat) System.out.println(routerName + ": received package " + p.toString() + " " + log);
                 }
             }
 
@@ -118,36 +124,24 @@ public abstract class Router implements Runnable, Config
     }
 
 
-    protected String proceedPackage(Package p)
+
+    private String proceedPackage(Package p)
     {
         String log = "";
 
-        if(p.getTTL() <= 0)
+        if(daemonForMe.processPackage(p))
         {
-            log += "cannot send (TTL=0)";
+            log += "for me " + p.getLog();
+            packageForMe(p);
             return log;
         }
 
-        for(Socket socket : sockets.values())
+        if(daemonSelf.processPackage(p))
         {
-            if(socket.getAddress() == p.getDestination())
-            {
-                packageForMe(p);
-                log += "for me " + p.getLog();
-                return log;
-            }
-            if(socket.getOuterSocket() != null)
-            {
-                //if (p.getDestination() == socket.getOuterSocket().getAddress())
-                Socket outer = socket.getOuterSocket();
-                if((outer.getNetmask()&outer.getAddress()) == (p.getDestination()&outer.getNetmask()))
-                {
-                    socket.sendPackageThruPort(p);
-                    log += "send by CONNECTED PORTS";
-                    return log;
-                }
-            }
+            log += "send by CONNECTED PORTS";
+            return log;
         }
+
         if(daemonStatic.processPackage(p))
         {
             log += "send by STATIC ROUTING";
@@ -165,17 +159,16 @@ public abstract class Router implements Runnable, Config
         return log;
     }
 
-    protected void packageForMe(Package p)
+    private void packageForMe(Package p)
     {
         if(p.getInformation().toString() == "ping")
         {
             Package re = new Package(p.getDestination(), p.getSource(), "ping repy");
-
             sendPackage(re);
         }
     }
 
-    protected void clearSockets()
+    private void clearSockets()
     {
         for(HashMap.Entry<String, Socket> one : sockets.entrySet())
         {
@@ -192,9 +185,21 @@ public abstract class Router implements Runnable, Config
     public void hideConsole() { console.setVisible(false); }
 
     @Override
-    public String config(String order)
+    public String config(String[] command)
     {
-        //TODO
+        if(command[0] == "set")
+        {
+            if(command[1] == "name") this.setName(command[2]);
+        }
+
+        if(command[0] == "run") ;//todo
+        if(command[0] == "stop") ;//todo
+
+        if(command[0] == "ping")
+        {
+            Package p = new Package(command[1], command[2], command[3], 123);
+        }
+
         return null;
     }
 

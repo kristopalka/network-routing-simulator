@@ -5,7 +5,12 @@ public class InputAnalyzer {
         
     }
 
-    public int parseInputCommand(String inputAction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated method
+    public String[] parseInputCommand(String inputAction)
+    {
+        //todo
+
+        String[] input = inputAction.split(" ");
+
+        return input;
     }
 }

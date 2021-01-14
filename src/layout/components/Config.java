@@ -2,5 +2,5 @@ package layout.components;
 
 public interface Config
 {
-    public String config(String order);
+    public String config(String[] command);
 }

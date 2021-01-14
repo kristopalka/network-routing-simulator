@@ -56,14 +56,14 @@ public class testingMain
 
         // --------------------------------- starting routers ---------------------------------
 
-        Thread pc1 = new Thread(l.router(1));
-        Thread r1 = new Thread(l.router(2));
-        Thread r2 = new Thread(l.router(3));
-        Thread pc2 = new Thread(l.router(4));
-        pc1.start();
-        r1.start();
-        r2.start();
-        pc2.start();
+//        Thread pc1 = new Thread(l.router(1));
+//        Thread r1 = new Thread(l.router(2));
+//        Thread r2 = new Thread(l.router(3));
+//        Thread pc2 = new Thread(l.router(4));
+//        pc1.start();
+//        r1.start();
+//        r2.start();
+//        pc2.start();
 
 
         // --------------------------------- sending package ---------------------------------
