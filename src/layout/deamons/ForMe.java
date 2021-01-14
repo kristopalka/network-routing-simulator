@@ -3,15 +3,14 @@ package layout.deamons;
 import layout.components.Package;
 import layout.components.Route;
 import layout.components.Socket;
-import tools.IPConverter;
 
 import java.util.HashMap;
 
-public class SelfPorts extends Daemon
+public class ForMe extends Daemon
 {
     protected HashMap<String, Socket> sockets;
 
-    public SelfPorts(HashMap<String, Socket> sockets)
+    public ForMe(HashMap<String, Socket> sockets)
     {
         this.sockets = sockets;
     }
@@ -19,22 +18,15 @@ public class SelfPorts extends Daemon
     @Override
     public boolean processPackage(Package p)
     {
-        if(!isOn) return false;
         for(Socket socket : sockets.values())
         {
-            if(socket.getOuterSocket() != null)
+            if(socket.getAddress() == p.destination)
             {
-                Socket outer = socket.getOuterSocket();
-                if((outer.getNetmask()&outer.getAddress()) == (p.destination&outer.getNetmask()))
-                {
-                    socket.sendPackageThruPort(p);
-                    return true;
-                }
+                return true;
             }
         }
         return false;
     }
-
 
     @Override
     public String config(String[] command)
@@ -44,16 +36,16 @@ public class SelfPorts extends Daemon
             case "on":
             {
                 this.isOn = true;
-                return "Turning on self ports routing\n";
+                return "Turning on processing packages for me\n";
             }
             case "off":
             {
                 this.isOn = false;
-                return "Turning off self ports routing\n";
+                return "Turning off processing packages for me\n";
             }
             default:
             {
-                return "Self ports routing: invalid input\n";
+                return "For me: invalid input\n";
             }
         }
     }

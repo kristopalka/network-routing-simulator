@@ -26,13 +26,9 @@ public class testingMain
         l.connect(l.router(2).socket("red"), l.router(3).socket("red"));
         l.connect(l.router(3).socket("blue"), l.router(4).socket("blue"));
 
-        ArrayList<Connection> a = l.getConnectionsInfo();
-        for(Connection c : a)
-        {
-            System.out.println(c.toString());
-        }
 
-        // --------------------------------- configuring routers ---------------------------------
+
+        /*// --------------------------------- configuring routers ---------------------------------
 
         // PC1 (1)
         l.router(1).socket("blue").setAddress("192.168.0.2", 24);
@@ -53,24 +49,36 @@ public class testingMain
         l.router(4).socket("blue").setAddress("192.168.2.2", 24);
 
 
+        // --------------------------------- sending package ---------------------------------
 
-        // --------------------------------- starting routers ---------------------------------
+        l.router(1).config(new String[]{"ping", "192.168.2.2"});
+         */
 
-//        Thread pc1 = new Thread(l.router(1));
-//        Thread r1 = new Thread(l.router(2));
-//        Thread r2 = new Thread(l.router(3));
-//        Thread pc2 = new Thread(l.router(4));
-//        pc1.start();
-//        r1.start();
-//        r2.start();
-//        pc2.start();
+        // --------------------------------- configuring routers ---------------------------------
+
+        // -------- PC1 (1) --------
+        l.router(1).configure("interface blue set 192.168.0.2 255.255.255.0");
+
+        // -------- R1 (2) --------
+        l.router(2).configure("interface blue set 192.168.0.1 255.255.255.0");
+        l.router(2).configure("interface red set 192.168.1.1 255.255.255.0");
+
+        l.router(2).configure("static add 192.168.2.0 255.255.255.0 red");
+
+        // -------- R2 (3) --------
+        l.router(3).configure("interface blue set 192.168.2.1 255.255.255.0");
+        l.router(3).configure("interface red set 192.168.1.1 255.255.255.0");
+
+        l.router(3).configure("static add 192.168.0.1 255.255.255.0 red");
+
+        // -------- PC2 (4) --------
+        l.router(4).configure("interface blue set 192.168.2.2 255.255.255.0");
 
 
         // --------------------------------- sending package ---------------------------------
 
-        Package p = new Package("192.168.0.2", "192.168.2.2", "ping");
+        l.router(1).configure("ping 192.168.2.2");
 
-        l.router(1).sendPackage(p);
 
     }
 }

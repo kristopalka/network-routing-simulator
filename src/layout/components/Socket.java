@@ -2,6 +2,7 @@ package layout.components;
 
 import layout.devices.Router;
 import tools.IPConverter;
+import tools.InputAnalyzer;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -9,12 +10,13 @@ import java.util.Queue;
 public class Socket implements Config
 {
     private String socketName;
-    private Queue<Package> inputBuff;
-    private Socket outerSocket;
+    private Queue<Package> inputBuff = new LinkedList<>();
+    private Socket outerSocket = null;
     private Router parentRouter;
+    private boolean isOn = true;
 
-    private long address;
-    private long netmask;
+    private long address = IPConverter.strToNum("0.0.0.0");
+    private long netmask = IPConverter.strToNum("255.255.255.255");
 
     // ------------------------------------ constructors ------------------------------------
 
@@ -22,16 +24,16 @@ public class Socket implements Config
     {
         this.parentRouter = parentRouter;
         this.socketName = socketName;
-        this.inputBuff = new LinkedList<>();
-        this.outerSocket = null;
-
-        // no concrete IP address (mask 32)
-        address = IPConverter.strToNum("0.0.0.0");
-        netmask = IPConverter.strToNum("255.255.255.255");
     }
 
 
     // ------------------------------------ getters ------------------------------------
+
+    public boolean isFree()
+    {
+        if(outerSocket == null) return true;
+        else return false;
+    }
 
     public String getName() { return socketName; }
 
@@ -51,6 +53,12 @@ public class Socket implements Config
         return netmask;
     }
 
+    @Override
+    public String toString()
+    {
+        return this.address + " " + this.netmask;
+    }
+
     // ------------------------------------ setters ------------------------------------
 
     public void setOuterSocket(Socket outerSocket)
@@ -65,26 +73,19 @@ public class Socket implements Config
         this.netmask = IPConverter.getMask(netmask);
     }
 
-    private void setAddress(String address)
-    {
-        this.address = IPConverter.strToNum(address);
-    }
-
-    private void setNetmask(String netmask)
-    {
-        this.netmask = IPConverter.strToNum(netmask);
-    }
-
-    private void setNetmask(int length)
-    {
-        this.netmask = IPConverter.getMask(length);
-    }
-
 
     // ------------------------------------ sending and receiving packages ------------------------------------
 
     public void sendPackageThruPort(Package p)
     {
+        if(!isOn) return;
+
+        if(p.TTL == p.TTLmax) //this is first node
+        {
+            p.log = "From " + parentRouter.getName();
+            p.source = this.address;
+        }
+
         p.onGoThruPort(getFullName());
         outerSocket.pushPackageToBuff(p);
     }
@@ -103,6 +104,8 @@ public class Socket implements Config
 
     public Package receivePackageFromPort()
     {
+        if(!isOn) return null;
+
         Package p = inputBuff.poll();
         if(p != null)
         {
@@ -117,10 +120,47 @@ public class Socket implements Config
         inputBuff.clear();
     }
 
+
+    // ------------------------------------ config ------------------------------------
+
     @Override
     public String config(String[] command)
     {
-        //TODO
-        return null;
+        switch (command[0])
+        {
+            case "on":
+            {
+                this.isOn = true;
+                return "Turning on socket " + this.socketName + "\n";
+            }
+            case "off":
+            {
+                this.isOn = false;
+                return "Turning off socket " + this.socketName + "\n";
+            }
+            case "set":
+            {
+                try
+                {
+                    long address = IPConverter.strToNum(command[1]);
+                    long netmask = IPConverter.strToNum(command[2]);
+                    this.address = address;
+                    this.netmask = netmask;
+                    return "Adress setted\n";
+                }
+                catch (Exception e)
+                {
+                    return "Setting address: invalid input\n";
+                }
+            }
+            case "show":
+            {
+                return "Config: " + this.toString() + "\n";
+            }
+            default:
+            {
+                return "Config: invalid input\n";
+            }
+        }
     }
 }

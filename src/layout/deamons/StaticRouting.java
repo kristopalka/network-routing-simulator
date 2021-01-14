@@ -5,19 +5,26 @@ import layout.components.Route;
 import layout.components.Socket;
 import tools.IPConverter;
 
+import java.util.HashMap;
 import java.util.TreeSet;
 
 public class StaticRouting extends Daemon
 {
     TreeSet<Route> routes = new TreeSet<>();
+    protected HashMap<String, Socket> sockets;
+
+    public StaticRouting(HashMap<String, Socket> sockets)
+    {
+        this.sockets = sockets;
+    }
 
     @Override
     public boolean processPackage(Package p)
     {
+        if(!isOn) return false;
         for(Route route : routes)
         {
-            //System.out.println(route.socket.getFullName() + ": " + Long.toBinaryString(route.address&route.netmask) + "  " + Long.toBinaryString(p.getDestination()&route.netmask));
-            if((route.address&route.netmask) == (p.getDestination()&route.netmask))
+            if((route.address&route.netmask) == (p.destination&route.netmask))
             {
                 route.socket.sendPackageThruPort(p);
                 return true;
@@ -26,9 +33,9 @@ public class StaticRouting extends Daemon
         return false;
     }
 
-    public void addRoute(String ip, String mask, Socket socket)
+    protected void addRoute(long ip, long mask, Socket socket)
     {
-        Route r = new Route(IPConverter.strToNum(ip), IPConverter.strToNum(mask), socket);
+        Route r = new Route(ip, mask, socket);
         routes.add(r);
     }
 
@@ -38,17 +45,68 @@ public class StaticRouting extends Daemon
         routes.add(r);
     }
 
-    public void remRoute(String ip, String mask)
+    protected void remRoute(long ip, long mask)
     {
-        long address = IPConverter.strToNum(ip);
-        long netmask = IPConverter.strToNum(mask);
-        routes.removeIf(route -> route.netmask == netmask && route.address == address);
+        routes.removeIf(route -> route.netmask == mask && route.address == ip);
     }
 
     @Override
     public String config(String[] command)
     {
-        //TODO
-        return null;
+        switch (command[0])
+        {
+            case "on":
+            {
+                this.isOn = true;
+                return "Turning on static routing\n";
+            }
+            case "off":
+            {
+                this.isOn = false;
+                return "Turning off static routing\n";
+            }
+            case "add":
+            {
+                try
+                {
+                    long address = IPConverter.strToNum(command[1]);
+                    long netmask = IPConverter.strToNum(command[2]);
+                    Socket socket = sockets.get(command[3]);
+                    this.addRoute(address, netmask, socket);
+                    return "Added static route " + command[1] + " " + command[2] + " -> " + command[3];
+                }
+                catch (Exception e)
+                {
+                    return "Adding route: invalid input\n";
+                }
+            }
+            case "rem":
+            {
+                try
+                {
+                    long address = IPConverter.strToNum(command[1]);
+                    long netmask = IPConverter.strToNum(command[2]);
+                    this.remRoute(address, netmask);
+                    return "Removed static route " + command[1] + " " + command[2] + "\n";
+                }
+                catch (Exception e)
+                {
+                    return "Removing route: invalid input\n";
+                }
+            }
+            case "show":
+            {
+                String log = "";
+                for(Route route: routes)
+                {
+                    log += route.toString() + "\n";
+                }
+                return log + "\n";
+            }
+            default:
+            {
+                return "Static routing: invalid input\n";
+            }
+        }
     }
 }

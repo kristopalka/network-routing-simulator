@@ -8,10 +8,12 @@ import java.util.HashMap;
 
 public abstract class Daemon implements Config
 {
+    protected boolean isOn = true;
+
     public boolean processPackage(Package p)
     {
         // if solved
-        // send and return null
+        // send and return true
 
         // if not solved
         return false;
