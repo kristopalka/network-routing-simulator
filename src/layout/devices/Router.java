@@ -38,6 +38,10 @@ public abstract class Router implements Runnable, Config
         this.routerName = routerName;
         this.routerID = routerID;
         console = new ConsoleFrame(routerName);
+        console.commands = inputText ->
+        {
+            // operacja na tekście z inputu, 'inputText' jest stringiem
+        };
 
         for(String socketName : socketsNames)
         {

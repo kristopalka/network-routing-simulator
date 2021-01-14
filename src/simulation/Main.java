@@ -21,9 +21,4 @@ public class Main
         mainProgram.mainFrame.setSize(1280, 720);
         mainProgram.mainFrame.setVisible(true);
     }
-    
-    public static String getInfo() {
-        return "Sim v0";
-    }
-    
 }
