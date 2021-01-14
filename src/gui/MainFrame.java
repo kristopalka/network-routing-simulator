@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import layout.Layout;
 import tools.ImageIconGetter;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -13,15 +14,15 @@ public class MainFrame extends javax.swing.JFrame {
     
     // actualMode:  0-def, 1-add4SR, 2-add3SR, 3-addPC, 4-addLink, 5-del
     private int actualMode;
-    
+    private Layout layout;
     private HashSet<JDeviceLabel> screenMap;
 
-    public MainFrame() {
+    public MainFrame(Layout layout) {
         
         this.setTitle("Project Simulation");
         this.setMinimumSize(new Dimension(640, 480));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+        this.layout = layout;
         iig = new ImageIconGetter();
         screenMap = new HashSet<>();
         initComponents();
@@ -30,9 +31,9 @@ public class MainFrame extends javax.swing.JFrame {
     
     private JDeviceLabel getJDeviceLabel(Point location) {
         return switch (this.actualMode) {
-            case 1 -> new JDeviceLabel("4SR", iig.getIcon("router4.png", 54), location);
-            case 2 -> new JDeviceLabel("3SR", iig.getIcon("router3.png", 54), location);
-            default -> new JDeviceLabel("PC", iig.getIcon("pc.png", 54), location);
+            case 1 -> new JDeviceLabel("4SR", iig.getIcon("router4.png", 54), location, this.layout);
+            case 2 -> new JDeviceLabel("3SR", iig.getIcon("router3.png", 54), location, this.layout);
+            default -> new JDeviceLabel("PC", iig.getIcon("pc.png", 54), location, this.layout);
         };
     }
     
