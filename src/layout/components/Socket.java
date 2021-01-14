@@ -1,39 +1,55 @@
 package layout.components;
 
+import layout.devices.Router;
+import tools.IPConverter;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Socket
+public class Socket implements Config
 {
-    private String routerID;
-    private String socketID;
+    private String socketName;
     private Queue<Package> inputBuff;
     private Socket outerSocket;
-    protected long address;                //todo obsługa błędów, nienależenie do tej samej sieci, itd
-    protected long netmask;                //todo gettery, settery
+    private Router parentRouter;
+
+    private long address;
+    private long netmask;
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Socket(String socketID, String routerID)
+    public Socket(String socketName, Router parentRouter)
     {
-        this.routerID = routerID;
-        this.socketID = socketID;
+        this.parentRouter = parentRouter;
+        this.socketName = socketName;
         this.inputBuff = new LinkedList<>();
         this.outerSocket = null;
 
-        //todo set up starting parameters
-        //address = ;
-        //netmask = ;
+        // no concrete IP address (mask 32)
+        address = IPConverter.strToNum("0.0.0.0");
+        netmask = IPConverter.strToNum("255.255.255.255");
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getID() { return socketID; }
+    public String getName() { return socketName; }
 
-    public String getPathID() { return routerID + "." + socketID; }
+    public String getFullName() { return parentRouter.getName() + "." + socketName; }
+
+    public int getParentID() { return parentRouter.getID(); }
 
     public Socket getOuterSocket() { return outerSocket; }
+
+    public long getAddress()
+    {
+        return address;
+    }
+
+    public long getNetmask()
+    {
+        return netmask;
+    }
 
     // ------------------------------------ setters ------------------------------------
 
@@ -43,14 +59,37 @@ public class Socket
     }
 
 
+    public void setAddress(String address, int netmask)
+    {
+        this.address = IPConverter.strToNum(address);
+        this.netmask = IPConverter.getMask(netmask);
+    }
+
+    private void setAddress(String address)
+    {
+        this.address = IPConverter.strToNum(address);
+    }
+
+    private void setNetmask(String netmask)
+    {
+        this.netmask = IPConverter.strToNum(netmask);
+    }
+
+    private void setNetmask(int length)
+    {
+        this.netmask = IPConverter.getMask(length);
+    }
+
+
     // ------------------------------------ sending and receiving packages ------------------------------------
 
     public void sendPackageThruPort(Package p)
     {
+        p.onGoThruPort(getFullName());
         outerSocket.pushPackageToBuff(p);
     }
 
-    public void pushPackageToBuff(Package p)
+    private void pushPackageToBuff(Package p)
     {
         try
         {
@@ -64,15 +103,13 @@ public class Socket
 
     public Package receivePackageFromPort()
     {
-        try
+        Package p = inputBuff.poll();
+        if(p != null)
         {
-            return inputBuff.poll();
+            p.onGoThruPort(getFullName());
+            return p;
         }
-        catch(Exception e)
-        {
-            System.out.println("Cannot get package from buffer: " + e.getMessage());
-            return null;
-        }
+        else return null;
     }
 
     public void clearBuff()
@@ -80,4 +117,10 @@ public class Socket
         inputBuff.clear();
     }
 
+    @Override
+    public String config(String[] command)
+    {
+        //TODO
+        return null;
+    }
 }

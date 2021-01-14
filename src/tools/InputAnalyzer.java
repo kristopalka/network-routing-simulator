@@ -1,9 +1,16 @@
 package tools;
 
 public class InputAnalyzer {
-    
-    public static String parseInputCommand(String inputAction) {
+    public InputAnalyzer() {
         
-        return "";
+    }
+
+    public String[] parseInputCommand(String inputAction)
+    {
+        //todo
+
+        String[] input = inputAction.split(" ");
+
+        return input;
     }
 }

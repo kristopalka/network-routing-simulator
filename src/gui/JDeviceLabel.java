@@ -6,22 +6,20 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.util.Random;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import layout.Layout;
+import javax.swing.SwingUtilities;
+import layout.*;
 
 public class JDeviceLabel extends JLabel {
     
     private int xPressed = 0;
     private int yPressed = 0;
-    private int routerID;
+    private final int routerID;
+    JDevicePopUpMenu menu;
     
-    public JDeviceLabel(String text, Icon icon, Point location, Layout layout) {
+    public JDeviceLabel(String text, Icon icon, Point location, int routerID, Layout layout) {
         super();
-        Random r = new Random();
-        int hash = (int) (53*(53*7 + location.getX()) + location.getY() + r.nextInt(100));
-        layout.addRouter(this.generate );
         this.setPreferredSize(new Dimension(80, 80));
         this.setSize(this.getPreferredSize());
         this.setIcon(icon);
@@ -34,8 +32,8 @@ public class JDeviceLabel extends JLabel {
         this.setHorizontalTextPosition(JLabel.CENTER);
         this.setLocation((int) location.getX(), (int) location.getY());
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        this.addMouseListener(new PopClickListener());
-
+        this.addMouseListener(new PopClickListener(layout, routerID));
+        this.routerID = routerID;
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){
@@ -44,13 +42,31 @@ public class JDeviceLabel extends JLabel {
             }
         });
     }
-//    
-//    public void mouseDragged(MouseEvent e) {
-//        Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), e);
-//        e.getComponent().setLocation(p.x, p.y);
-//    }
+    
+    @Override
+    public int hashCode() {
+        return this.routerID;
+    }
+
+    public void removeSelf() {
+        ((MainFrame) SwingUtilities.getWindowAncestor(this)).deleteRouter(this.routerID);
+    }
+
+    int getID() {
+        return this.routerID;
+    }
 
     class PopClickListener extends MouseAdapter {
+        
+        Layout l;
+        private int id;
+        
+        public PopClickListener(Layout l, int routerID) {
+            super();
+            this.l = l;
+            this.id = routerID;
+        }
+        
         @Override
         public void mousePressed(MouseEvent e) {
             if (e.isPopupTrigger()) {
@@ -58,6 +74,7 @@ public class JDeviceLabel extends JLabel {
             }
             xPressed = e.getX();
             yPressed = e.getY();
+            removeSelf();
         }
 
         @Override
@@ -68,7 +85,7 @@ public class JDeviceLabel extends JLabel {
         }
 
         private void doPop(MouseEvent e) {
-            JDevicePopUpMenu menu = new JDevicePopUpMenu();
+            menu = new JDevicePopUpMenu(l, id);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
