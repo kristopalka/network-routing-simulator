@@ -15,15 +15,20 @@ public class Line extends JComponent {
     public int routerStartID;
     public int routerEndID;
     
-    public Line(Color startColor, Color endColor, int routerStartID, int routerEndID, HashMap<Integer, JDeviceLabel> screenMap) {
-        this.start = screenMap.get(routerStartID).getLocation();
-        this.end = screenMap.get(routerEndID).getLocation();
+    public Line(Color startColor, Color endColor, int routerStartID, int routerEndID) {
+        this.start = MainFrame.INSTANCE.screenMap.get(routerStartID).getLocation();
+        this.end = MainFrame.INSTANCE.screenMap.get(routerEndID).getLocation();
         this.startColor = startColor;
         this.endColor = endColor;
         this.routerStartID = routerStartID;
         this.routerEndID = routerEndID;
     }
     
+    public void regnerate() {
+        this.start = MainFrame.INSTANCE.screenMap.get(routerStartID).getLocation();
+        this.end = MainFrame.INSTANCE.screenMap.get(routerEndID).getLocation();
+    }
+
     public int hashCode() {
         return (int) ((int) 53*(53*7 + this.start.getX() + this.end.getY()) + this.start.getY() + this.end.getY());
     }

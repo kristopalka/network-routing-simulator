@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -26,11 +27,13 @@ import tools.ImageIconGetter;
 public class MainFrame extends javax.swing.JFrame {
     
     private ImageIconGetter iig;
+    private LinkBuffer lb;
+    private SimulationPanel simulationPanel;
     
     // actualMode:  0-def, 1-add4SR, 2-add3SR, 3-addPC, 4-addLink, 5-del
     private int actualMode;
     private Layout layout;
-    private HashMap<Integer, JDeviceLabel> screenMap;
+    public HashMap<Integer, JDeviceLabel> screenMap;
     public static MainFrame INSTANCE;
 
     public MainFrame(Layout layout) {
@@ -42,13 +45,24 @@ public class MainFrame extends javax.swing.JFrame {
         this.layout = layout;
         iig = new ImageIconGetter();
         screenMap = new HashMap<>();
+        simulationPanel = new SimulationPanel();
+        simulationPanel.setBackground(new java.awt.Color(255, 255, 255));
+        simulationPanel.setMaximumSize(new java.awt.Dimension(2000, 1000));
+        simulationPanel.setPreferredSize(new java.awt.Dimension(2000, 1000));
+        simulationPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                simulationPanelClicked(evt);
+            }
+        });
+        simulationPanel.setLayout(null);
         initComponents();
+        simulationScroll.setViewportView(simulationPanel);
         this.setLocationByPlatform(true);
-        
-        
     }
     
-    private void refreshMap() {
+    public void refreshMap() {
+        
+        simulationPanel.regenerateLinks();
         
         simulationPanel.revalidate();
         simulationPanel.repaint();
@@ -59,6 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(this.actualMode == 5) {
             this.layout.remRouter(routerID);
             this.simulationPanel.remove(screenMap.get(routerID));
+            this.simulationPanel.removeLineByRouterID(routerID);
             this.refreshMap();
             this.setActualMode(this.actualMode);
         }
@@ -73,6 +88,10 @@ public class MainFrame extends javax.swing.JFrame {
         };
 
         return r;
+    }
+
+    public int getActualMode() {
+        return actualMode;
     }
     
     private JDeviceLabel getJDeviceLabel(Point location, int routerID) {
@@ -126,7 +145,6 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         simulationScroll = new javax.swing.JScrollPane();
-        simulationPanel = new SimulationPanel();
         statusLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -229,18 +247,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         simulationScroll.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         simulationScroll.setAutoscrolls(true);
-
-        simulationPanel.setBackground(new java.awt.Color(255, 255, 255));
-        simulationPanel.setMaximumSize(new java.awt.Dimension(2000, 1000));
-        simulationPanel.setPreferredSize(new java.awt.Dimension(2000, 1000));
-        simulationPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                simulationPanelMouseClicked(evt);
-            }
-        });
-        simulationPanel.setLayout(null);
-        simulationScroll.setViewportView(simulationPanel);
-
         getContentPane().add(simulationScroll, java.awt.BorderLayout.CENTER);
 
         statusLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -382,9 +388,10 @@ public class MainFrame extends javax.swing.JFrame {
         }
         this.layout = new Layout();
         this.screenMap = new HashMap<>();
+        ((SimulationPanel) this.simulationPanel).removeAllComponents();
+        this.lb = null;
         this.simulationPanel.removeAll();
-        this.simulationPanel.revalidate();
-        this.simulationPanel.repaint();
+        refreshMap();
         
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -398,27 +405,10 @@ public class MainFrame extends javax.swing.JFrame {
         this.setActualMode(1);
     }//GEN-LAST:event_jLabel1MousePressed
     
-    // adding device on screen
-    private void simulationPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simulationPanelMouseClicked
-        if(this.actualMode != 0) {
-            if(this.actualMode < 4) {
-                    Random r = new Random();
-                    int id = (int) (53*(53*7 + evt.getX()) + evt.getY() + r.nextInt(100));
-                    JDeviceLabel jdl = this.getJDeviceLabel(new Point(evt.getX(), evt.getY()), id);
-                    this.screenMap.put(id, jdl);
-                    this.layout.addRouter(this.generateRouter(this.actualMode, id));
-                    this.simulationPanel.add(jdl);
-                    this.simulationPanel.revalidate();
-                    this.simulationPanel.repaint();
-            }
-            
-            this.simulationScroll.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            this.setActualMode(0);
-        }
-    }//GEN-LAST:event_simulationPanelMouseClicked
-    
+   
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            this.lb = null;
             this.setActualMode(0);
         }
     }//GEN-LAST:event_formKeyPressed
@@ -543,9 +533,67 @@ public class MainFrame extends javax.swing.JFrame {
         return("TO DO EXPORT");
         
     }
+    
+    public Color getColor(String colour) {
+        switch(colour) {
+            case "red":
+                return Color.red;
+            case "green":
+                return Color.green;
+            case "blue":
+                return Color.blue;
+            default:
+                return Color.yellow;
+        }
+    }
 
     public void addLink(int routerID, String socketID) {
-        System.out.println('h');
+        if(this.actualMode == 4) {
+            if(this.lb == null) {
+                lb = new LinkBuffer(routerID, socketID);
+                System.out.print("Tworzę start");
+            }
+            else {
+                System.out.println("Tworzę end");                
+                layout.connect(layout.router(lb.routerID).socket(lb.socketID), layout.router(routerID).socket(socketID));
+                ((SimulationPanel) this.simulationPanel).putLine(new Line(getColor(lb.socketID), getColor(socketID), lb.routerID, routerID));
+                setActualMode(0);
+                this.lb = null;
+                refreshMap();
+            }
+        }
+    }
+    
+    private void simulationPanelClicked(java.awt.event.MouseEvent evt) {
+        if(this.actualMode != 0) {
+            if(this.actualMode < 4) {
+                Random r = new Random();
+                int id = (int) (53*(53*7 + evt.getX()) + evt.getY() + r.nextInt(100));
+                JDeviceLabel jdl = this.getJDeviceLabel(new Point(evt.getX(), evt.getY()), id);
+                this.screenMap.put(id, jdl);
+                this.layout.addRouter(this.generateRouter(this.actualMode, id));
+                this.simulationPanel.add(jdl);
+                refreshMap();
+            }
+            if(this.actualMode == 4) {
+                this.lb = null;
+                this.simulationScroll.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                this.setActualMode(0);
+            }
+            refreshMap();
+            this.setActualMode(0);
+        }    
+    }
+    
+    class LinkBuffer {
+        
+        int routerID;
+        String socketID;
+        
+        public LinkBuffer(int rID, String sID) {
+            this.routerID = rID;
+            this.socketID = sID;
+        }
     }
     
     // file filter for .json files
@@ -587,7 +635,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPanel simulationPanel;
     private javax.swing.JScrollPane simulationScroll;
     private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables

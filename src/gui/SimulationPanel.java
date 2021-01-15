@@ -11,11 +11,15 @@ import javax.swing.JPanel;
 public class SimulationPanel extends JPanel {
     
     private HashSet<Line> lines;
+    private static int rs = 40;
     
     public SimulationPanel() {
         super();
         lines = new HashSet<>();
-        //lines.add(new Line(new Point(20, 30), new Color(0.4f, 0.5f, 0.6f), new Point(200, 400), new Color(0.9f, 0.8f, 0.7f)));
+    }
+    
+    public void putLine(Line l) {
+        this.lines.add(l);
     }
     
     void drawLines(Graphics g) {
@@ -26,15 +30,15 @@ public class SimulationPanel extends JPanel {
             
             g2d.setColor(Color.BLACK);
             g2d.setStroke(new BasicStroke(10f));
-            g2d.drawLine((int) line.getStart().getX() +50, (int) line.getStart().getY() +50, (int) line.getEnd().getX() +50, (int) line.getEnd().getY() +50);
+            g2d.drawLine((int) line.getStart().getX() +rs, (int) line.getStart().getY() +rs, (int) line.getEnd().getX() +rs, (int) line.getEnd().getY() +rs);
             
             g2d.setStroke(new BasicStroke(4f));
             
             g2d.setColor(line.getStartColor());
-            g2d.drawLine((int) line.getStart().getX() +50, (int) line.getStart().getY() +50, (int) line.getCenter().getX() +50, (int) line.getCenter().getY()+50);
+            g2d.drawLine((int) line.getStart().getX() +rs, (int) line.getStart().getY() +rs, (int) line.getCenter().getX() +rs, (int) line.getCenter().getY()+rs);
             
             g2d.setColor(line.getEndColor());
-            g2d.drawLine((int) line.getCenter().getX()+50, (int) line.getCenter().getY()+50, (int) line.getEnd().getX()+50, (int) line.getEnd().getY()+50);
+            g2d.drawLine((int) line.getCenter().getX()+rs, (int) line.getCenter().getY()+rs, (int) line.getEnd().getX()+rs, (int) line.getEnd().getY()+rs);
         }
  
     }
@@ -44,5 +48,22 @@ public class SimulationPanel extends JPanel {
         super.paintComponent(g);
         drawLines(g);
     }
+
+    public void removeAllComponents() {
+        this.lines = new HashSet<>();
+    }
     
+    public void removeLineByRouterID(int rID) {
+        for(Line line : lines) {
+            if(line.routerStartID == rID || line.routerEndID == rID) {
+                lines.remove(line);
+            }
+        }
+    }
+
+    public void regenerateLinks() {
+        for(Line line : lines) {
+            line.regnerate();
+        }
+    }
 }

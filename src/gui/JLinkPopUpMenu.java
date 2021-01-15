@@ -1,15 +1,13 @@
 package gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 import layout.Layout;
 
-public class JLinkPopUpMenu extends JPopupMenu{
+public class JLinkPopUpMenu extends JPopupMenu {
     
     ArrayList<JMenuItem> socketsItem;
     
@@ -29,17 +27,11 @@ public class JLinkPopUpMenu extends JPopupMenu{
             
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    MainFrame.INSTANCE.addLink(routerID, socket);
-                    
+                     MainFrame.INSTANCE.addLink(routerID, socket);
                 }
             });
             
             this.add(item);
         }
     }
-    
-    private void addLink(String socketID) {
-        
-    }
-    
 }

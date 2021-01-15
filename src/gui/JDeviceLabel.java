@@ -41,6 +41,7 @@ public class JDeviceLabel extends JLabel {
                 menu = null;
                 linkMenu = null;
                 setLocation(e.getX() + JDeviceLabel.this.getX() - xPressed, e.getY() + JDeviceLabel.this.getY() - yPressed);
+                MainFrame.INSTANCE.refreshMap();
             }
         });
     }
