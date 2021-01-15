@@ -310,6 +310,17 @@ public class ConsoleFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+
+    public void printBold(String line) {
+        SimpleAttributeSet inputSAS = new SimpleAttributeSet();
+        StyleConstants.setBold(inputSAS, true);
+        try {
+            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(),"\n" + line, inputSAS);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     private void increaseFont() {
         Font f = this.outputPane.getFont();

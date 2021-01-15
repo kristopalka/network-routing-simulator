@@ -50,6 +50,8 @@ public abstract class Router implements Runnable, Config
         {
             sockets.put(socketName, new Socket(socketName, this));
         }
+
+        console.printBold(routerName + " has started!");
     }
 
 
@@ -97,6 +99,8 @@ public abstract class Router implements Runnable, Config
 
         while(isRunning)
         {
+
+            System.out.println(routerName + ": ~");
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
@@ -126,6 +130,7 @@ public abstract class Router implements Runnable, Config
     {
         System.out.print(routerName + ": " + p.toString());
         proceedPackage(p);
+        return;
     }
 
     protected void proceedPackage(Package p)
@@ -159,6 +164,7 @@ public abstract class Router implements Runnable, Config
 
         daemonGarbage.processPackage(p);
         System.out.println( " cannot send" + p.getLog());
+        return;
     }
 
     protected void packageForMe(Package p)
@@ -203,6 +209,7 @@ public abstract class Router implements Runnable, Config
 
     public String callCommand(String input)
     {
+        if(input == "") return "";
         String[] command = InputAnalyzer.parseInputCommand(input);
         return config(command);
     }
@@ -211,6 +218,7 @@ public abstract class Router implements Runnable, Config
     @Override
     public String config(String[] command)
     {
+        if(command == null) return "";
         if(command.length == 1) return "Incomplete command";
 
         switch (command[0])
@@ -379,8 +387,8 @@ public abstract class Router implements Runnable, Config
                 ping.time = this.timeFromStart;
                 ping.type = "ping";
 
-                sendPackage(ping);
 
+                sendPackage(ping);
                 return "Pinging " + command[1] + " ...";
             }
 
