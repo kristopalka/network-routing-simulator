@@ -5,11 +5,11 @@ import layout.components.Socket;
 
 import java.util.HashMap;
 
-public class RIP extends Daemon
+public class ForMe extends Daemon
 {
-    private HashMap<String, Socket> sockets;
+    protected HashMap<String, Socket> sockets;
 
-    public RIP(HashMap<String, Socket> sockets)
+    public ForMe(HashMap<String, Socket> sockets)
     {
         this.sockets = sockets;
     }
@@ -17,15 +17,14 @@ public class RIP extends Daemon
     @Override
     public boolean processPackage(Package p)
     {
-        //TODO routing
+        for(Socket socket : sockets.values())
+        {
+            if(socket.getAddress() == p.destination)
+            {
+                return true;
+            }
+        }
         return false;
-    }
-
-    @Override
-    public void processOwnTasks()
-    {
-        //TODO processing
-        return;
     }
 
     @Override
@@ -36,17 +35,17 @@ public class RIP extends Daemon
             case "on":
             {
                 this.isOn = true;
-                return "Turning on RIP";
+                return "Turning on processing packages for me\n";
             }
             case "off":
             case "of":
             {
                 this.isOn = false;
-                return "Turning off RIP";
+                return "Turning off processing packages for me\n";
             }
             default:
             {
-                return "Probably not implemented yet to RIP";
+                return "Invalid input\n";
             }
         }
     }

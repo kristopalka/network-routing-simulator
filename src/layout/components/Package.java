@@ -1,36 +1,61 @@
 package layout.components;
 
+import tools.IPConverter;
+
 public class Package
 {
-    private long source;
-    private long destination;
-    private Object information;
+    public long source;
+    public long destination;
 
+    final public static int TTLmax = 32;
+    public int TTL = TTLmax;
+    public long time = 0;
+    public String type = "";
+
+    public String log = "";
+    public Object information;
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Package(int sourceID, int destinationID, Object information)
+    public Package(long sourceID, long destinationID)
     {
         this.source = sourceID;
         this.destination = destinationID;
-        this.information = information;
     }
-
 
     // ------------------------------------ getters ------------------------------------
 
-    public Object getInformation()
+    public String getLog() { return "(" + log + ")"; }
+
+    @Override
+    public String toString()
     {
-        return information;
+        return "{from: " + IPConverter.numToStr(source) + "  to: " + IPConverter.numToStr(destination) + "  type: "+ type + "}";
     }
 
-    public long getSource()
+    public String toStringExtend()
     {
-        return source;
+        String info;
+        try { info = information.toString(); }
+        catch(Exception e) { info = ""; }
+        return  "{\n" +
+                "   source: " + IPConverter.numToStr(source) + "\n" +
+                "   destination: " + IPConverter.numToStr(destination) + "\n" +
+                "   TTL: " + TTL + "\n" +
+                "   sended time: \"" + time + "\"\n" +
+                "   type: \"" + type + "\"\n" +
+                "   log: \"" + log + "\"\n" +
+                "   value: {" + info + "}\n" +
+                "}";
     }
 
-    public long getDestination()
+
+    // ------------------------------------ setters ------------------------------------
+
+    public void onGoThruPort(String portID)
     {
-        return destination;
+        log = log + " -> " + portID;
+        TTL--;
     }
+
 }

@@ -1,39 +1,63 @@
 package layout.components;
 
+import layout.devices.Router;
+import tools.IPConverter;
+import tools.InputAnalyzer;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Socket
+public class Socket implements Config
 {
-    private String routerID;
-    private String socketID;
-    private Queue<Package> inputBuff;
-    private Socket outerSocket;
-    protected long address;                //todo obsługa błędów, nienależenie do tej samej sieci, itd
-    protected long netmask;                //todo gettery, settery
+    private String socketName;
+    private Queue<Package> inputBuff = new LinkedList<>();
+    private Socket outerSocket = null;
+    private Router parentRouter;
+    private boolean isOn = true;
+
+    private long address = IPConverter.strToNum("0.0.0.0");
+    private long netmask = IPConverter.strToNum("255.255.255.255");
 
     // ------------------------------------ constructors ------------------------------------
 
-    public Socket(String socketID, String routerID)
+    public Socket(String socketName, Router parentRouter)
     {
-        this.routerID = routerID;
-        this.socketID = socketID;
-        this.inputBuff = new LinkedList<>();
-        this.outerSocket = null;
-
-        //todo set up starting parameters
-        //address = ;
-        //netmask = ;
+        this.parentRouter = parentRouter;
+        this.socketName = socketName;
     }
 
 
     // ------------------------------------ getters ------------------------------------
 
-    public String getID() { return socketID; }
+    public boolean isFree()
+    {
+        if(outerSocket == null) return true;
+        else return false;
+    }
 
-    public String getPathID() { return routerID + "." + socketID; }
+    public String getName() { return socketName; }
+
+    public String getFullName() { return parentRouter.getName() + "." + socketName; }
+
+    public int getParentID() { return parentRouter.getID(); }
 
     public Socket getOuterSocket() { return outerSocket; }
+
+    public long getAddress()
+    {
+        return address;
+    }
+
+    public long getNetmask()
+    {
+        return netmask;
+    }
+
+    @Override
+    public String toString()
+    {
+        return IPConverter.numToStr(this.address) + " " + IPConverter.numToStr(this.netmask);
+    }
 
     // ------------------------------------ setters ------------------------------------
 
@@ -43,14 +67,30 @@ public class Socket
     }
 
 
+    public void setAddress(String address, int netmask)
+    {
+        this.address = IPConverter.strToNum(address);
+        this.netmask = IPConverter.getMask(netmask);
+    }
+
+
     // ------------------------------------ sending and receiving packages ------------------------------------
 
     public void sendPackageThruPort(Package p)
     {
+        if(!isOn) return;
+
+        if(p.TTL == p.TTLmax) //this is first node
+        {
+            p.log = "From " + parentRouter.getName();
+            p.source = this.address;
+        }
+
+        p.onGoThruPort(getFullName());
         outerSocket.pushPackageToBuff(p);
     }
 
-    public void pushPackageToBuff(Package p)
+    private void pushPackageToBuff(Package p)
     {
         try
         {
@@ -64,15 +104,15 @@ public class Socket
 
     public Package receivePackageFromPort()
     {
-        try
+        if(!isOn) return null;
+
+        Package p = inputBuff.poll();
+        if(p != null)
         {
-            return inputBuff.poll();
+            p.onGoThruPort(getFullName());
+            return p;
         }
-        catch(Exception e)
-        {
-            System.out.println("Cannot get package from buffer: " + e.getMessage());
-            return null;
-        }
+        else return null;
     }
 
     public void clearBuff()
@@ -80,4 +120,51 @@ public class Socket
         inputBuff.clear();
     }
 
+
+    // ------------------------------------ config ------------------------------------
+
+    @Override
+    public String config(String[] command)
+    {
+        switch (command[0])
+        {
+            case "on":
+            {
+                this.isOn = true;
+                return "Turning on socket " + this.socketName;
+            }
+            case "off":
+            case "of":
+            {
+                this.isOn = false;
+                return "Turning off socket " + this.socketName;
+            }
+            case "set":
+            case "se":
+            {
+                try
+                {
+                    long address = IPConverter.strToNum(command[1]);
+                    long netmask = IPConverter.strToMask(command[2]);
+                    this.address = address;
+                    this.netmask = netmask;
+                    return "Adress setted";
+                }
+                catch (Exception e)
+                {
+                    return "Invalid input";
+                }
+            }
+            case "show":
+            case "sho":
+            case "sh":
+            {
+                return this.socketName + ": " + this.toString();
+            }
+            default:
+            {
+                return "Invalid input";
+            }
+        }
+    }
 }

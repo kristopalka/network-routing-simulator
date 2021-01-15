@@ -36,6 +36,16 @@ public abstract class IPConverter
         return res;
     }
 
+    public static long strToMask(String mask) throws InvalidParameterException
+    {
+        if(mask.matches("[0-9]+"))
+        {
+            int m = Integer.parseInt(mask);
+            if( m>=0 && m<=32) return getMask(m);
+        }
+        return strToNum(mask);
+    }
+
     public static long getMask(int length)
     {
         long mask = 0L;

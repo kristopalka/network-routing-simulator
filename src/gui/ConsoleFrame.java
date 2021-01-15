@@ -5,24 +5,20 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.function.Consumer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class ConsoleFrame extends javax.swing.JFrame {
     
-    private String ROUTER_NAME;
-    private String ACTUAL_POSITION;
-    private Queue<String> inputQueue;
+    public String ROUTER_NAME;
+    public Consumer<String> commands;
 
     public ConsoleFrame(String routerName) {
-        this.inputQueue = new LinkedList<>();
         initComponents();
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
-        this.ACTUAL_POSITION = "";
-        this.printInfo(routerName + " has started.\n");
+        this.setLocationByPlatform(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -239,18 +235,16 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_scrollPaneMouseWheelMoved
 
-    public String getInputAction() throws Exception {
-        return this.inputQueue.remove();
-    }
-    
     private void enterInput() {
         String inputText = this.inputTextField.getText();
         this.printInput(inputText);
         this.inputTextField.setText("");
-        this.inputQueue.add(inputText);
+        if(commands != null) {
+            commands.accept(inputText);
+        }
     }
     
-    private void printInfo(String text) {
+    public void printInfo(String text) {
         SimpleAttributeSet infoSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(infoSAS, Color.MAGENTA);
         
@@ -263,7 +257,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printWarning(String text) {
+    public void printWarning(String text) {
         SimpleAttributeSet warningSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(warningSAS, Color.cyan);
         
@@ -276,7 +270,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printError(String text) {
+    public void printError(String text) {
         SimpleAttributeSet errorSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(errorSAS, Color.red);
         
@@ -289,7 +283,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printInput(String text) {
+    public void printInput(String text) {
         SimpleAttributeSet inputSAS = new SimpleAttributeSet(); 
         StyleConstants.setBold(inputSAS, true);
         
@@ -308,7 +302,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printLine(String line) {
+    public void printLine(String line) {
         try {
             this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(),"\n" + line, null);
         }
