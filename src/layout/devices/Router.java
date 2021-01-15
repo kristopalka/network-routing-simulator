@@ -27,8 +27,8 @@ public abstract class Router implements Runnable, Config
 
 
 
-    protected ForMe daemonForMe = new ForMe(sockets);
-    protected SelfPorts daemonSelf = new SelfPorts(sockets);
+    protected SelfPorts daemonSelfPorts = new SelfPorts(sockets);
+    protected ConnectedNets daemonConnected = new ConnectedNets(sockets);
     protected StaticRouting daemonStatic = new StaticRouting(sockets);
     protected RIP daemonRIP = new RIP(sockets);
     protected Garbage daemonGarbage = new Garbage();
@@ -135,13 +135,13 @@ public abstract class Router implements Runnable, Config
             System.out.println( " TTL=0" + p.getLog());
             return;
         }
-        if(daemonForMe.processPackage(p))
+        if(daemonSelfPorts.processPackage(p))
         {
             System.out.println(" get FOR ME");
             packageForMe(p);
             return;
         }
-        if(daemonSelf.processPackage(p))
+        if(daemonConnected.processPackage(p))
         {
             System.out.println( " send by CONNECTED PORTS");
             return;
@@ -179,7 +179,7 @@ public abstract class Router implements Runnable, Config
             {
                 System.out.println(this.routerName + ": ping answer for me:\n" + p.toStringExtend());
 
-                console.printLine("Reply from " + p.source + " time=" + (timeFromStart - p.time) + "[ms]");
+                console.printLine("Reply from " + IPConverter.numToStr(p.source)+ " time=" + (timeFromStart - p.time) + "[ms]");
                 return;
             }
             default:
@@ -216,11 +216,14 @@ public abstract class Router implements Runnable, Config
         switch (command[0])
         {
             // ----------------- daemond -----------------
-            case "forme":
-            case "form":
-            case "for":
-            case "fo":
-                return daemonForMe.config(Arrays.copyOfRange(command, 1, command.length));
+            case "selfports":
+            case "selfport":
+            case "selfpor":
+            case "selfpo":
+            case "selfp":
+            case "self":
+            case "sel":
+                return daemonSelfPorts.config(Arrays.copyOfRange(command, 1, command.length));
             case "garbage":
             case "garbag":
             case "garba":
@@ -231,14 +234,19 @@ public abstract class Router implements Runnable, Config
             case "rip":
             case "ri":
                 return daemonRIP.config(Arrays.copyOfRange(command, 1, command.length));
-            case "selfports":
-            case "selfport":
-            case "selfpor":
-            case "selfpo":
-            case "selfp":
-            case "self":
-            case "sel":
-                return daemonSelf.config(Arrays.copyOfRange(command, 1, command.length));
+            case "connectednets":
+            case "connectednet":
+            case "connectedne":
+            case "connectedn":
+            case "connected":
+            case "connecte":
+            case "connect":
+            case "connec":
+            case "conne":
+            case "conn":
+            case "con":
+            case "co":
+                return daemonConnected.config(Arrays.copyOfRange(command, 1, command.length));
             case "static":
             case "stati":
             case "stat":
@@ -332,9 +340,9 @@ public abstract class Router implements Runnable, Config
 
                         log += "daemons:\n" +
                                 "    for me:\n" +
-                                "        " + InputAnalyzer.boolToStr(daemonForMe.isOn()) + "\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonSelfPorts.isOn()) + "\n" +
                                 "    self ports:\n" +
-                                "        " + InputAnalyzer.boolToStr(daemonSelf.isOn()) + "\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonConnected.isOn()) + "\n" +
                                 "    static routing:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonStatic.isOn()) + "\n" +
                                 "        routes:\n";
