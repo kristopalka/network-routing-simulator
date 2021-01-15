@@ -36,16 +36,17 @@ public class RIP extends Daemon
             case "on":
             {
                 this.isOn = true;
-                return "Turning on RIP\n";
+                return "Turning on RIP";
             }
             case "off":
+            case "of":
             {
                 this.isOn = false;
-                return "Turning off RIP\n";
+                return "Turning off RIP";
             }
             default:
             {
-                return "RIP: probably not implemented yet\n";
+                return "Probably not implemented yet to RIP";
             }
         }
     }

@@ -24,4 +24,9 @@ public abstract class Daemon implements Config
         // if do nothing
         return;
     }
+
+    public boolean isOn()
+    {
+        return isOn;
+    }
 }

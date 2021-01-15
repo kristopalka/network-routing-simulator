@@ -3,6 +3,7 @@ package layout.devices;
 import gui.ConsoleFrame;
 import layout.components.Config;
 import layout.components.Package;
+import layout.components.Route;
 import layout.components.Socket;
 import layout.deamons.*;
 import tools.IPConverter;
@@ -24,11 +25,11 @@ public abstract class Router implements Runnable, Config
 
 
 
-    public ForMe daemonForMe = new ForMe(sockets);
-    public SelfPorts daemonSelf = new SelfPorts(sockets);
-    public StaticRouting daemonStatic = new StaticRouting(sockets);
-    public RIP daemonRIP = new RIP(sockets);
-    public Garbage daemonGarbage = new Garbage();
+    protected ForMe daemonForMe = new ForMe(sockets);
+    protected SelfPorts daemonSelf = new SelfPorts(sockets);
+    protected StaticRouting daemonStatic = new StaticRouting(sockets);
+    protected RIP daemonRIP = new RIP(sockets);
+    protected Garbage daemonGarbage = new Garbage();
 
 
     // ------------------------------------ constructor ------------------------------------
@@ -40,7 +41,7 @@ public abstract class Router implements Runnable, Config
         console = new ConsoleFrame(routerName);
         console.commands = inputText ->
         {
-            // operacja na tekście z inputu, 'inputText' jest stringiem
+            console.printLine(callCommand(inputText));
         };
 
         for(String socketName : socketsNames)
@@ -70,9 +71,16 @@ public abstract class Router implements Runnable, Config
     }
 
 
-    // ------------------------------------ getters ------------------------------------
+    // ------------------------------------ setters ------------------------------------
 
     public void stopThread() { this.isRunning = false; }
+
+    private void setRouterName(String name)
+    {
+        this.routerName = name;
+        console.setTitle(name);
+        console.ROUTER_NAME = name;
+    }
 
 
     // ------------------------------------ main loop ------------------------------------
@@ -168,7 +176,7 @@ public abstract class Router implements Runnable, Config
             {
                 System.out.println(this.routerName + ": ping answer for me:\n" + p.toStringExtend());
 
-                //todo print ping answer on graphic console
+                console.printLine("Reply from " + p.source + " time=" + (timeFromStart - p.time) + "[ms]");
                 return;
             }
             default:
@@ -188,15 +196,9 @@ public abstract class Router implements Runnable, Config
     }
 
 
-    // ------------------------------------ others ------------------------------------
-
-    public void showConsole() { console.setVisible(true); }
-
-    public void hideConsole() { console.setVisible(false); }
-
     // ------------------------------------ config ------------------------------------
 
-    public String configure(String input)
+    public String callCommand(String input)
     {
         String[] command = InputAnalyzer.parseInputCommand(input);
         return config(command);
@@ -206,29 +208,55 @@ public abstract class Router implements Runnable, Config
     @Override
     public String config(String[] command)
     {
+        if(command.length == 1) return "Incomplete command";
+
         switch (command[0])
         {
             // ----------------- daemond -----------------
             case "forme":
+            case "form":
+            case "for":
+            case "fo":
                 return daemonForMe.config(Arrays.copyOfRange(command, 1, command.length));
             case "garbage":
+            case "garbag":
+            case "garba":
+            case "garb":
+            case "gar":
+            case "ga":
                 return daemonGarbage.config(Arrays.copyOfRange(command, 1, command.length));
             case "rip":
+            case "ri":
                 return daemonRIP.config(Arrays.copyOfRange(command, 1, command.length));
             case "selfports":
+            case "selfport":
+            case "selfpor":
+            case "selfpo":
+            case "selfp":
+            case "self":
+            case "sel":
                 return daemonSelf.config(Arrays.copyOfRange(command, 1, command.length));
             case "static":
+            case "stati":
+            case "stat":
+            case "sta":
+            case "st":
                 return daemonStatic.config(Arrays.copyOfRange(command, 1, command.length));
 
             // ----------------- sockets -----------------
             case "interface":
+            case "interfac":
+            case "interfa":
+            case "interf":
             case "inter":
             case "inte":
             case "int":
+            case "in":
             {
                 Socket s = sockets.get(command[1]);
-                if(s == null) return "There is no socket with specified ID\n";
-                else return s.config(Arrays.copyOfRange(command, 2, command.length));
+                if(s == null) return "There is no socket with specified ID";
+                if(command.length == 2) return "Incomplete command";
+                return s.config(Arrays.copyOfRange(command, 2, command.length));
             }
 
             // ----------------- router config -----------------
@@ -237,32 +265,112 @@ public abstract class Router implements Runnable, Config
                 switch (command[1])
                 {
                     case "name":
+                    case "nam":
+                    case "na":
                     {
-                        this.routerName = command[2];
-                        return "Name setted\n";
+                        if(command.length == 2) return "Incomplete command";
+                        setRouterName(command[2]);
+                        return "New name: " + command[2];
                     }
                 }
             }
+
             case "show":
+            case "sho":
+            case "sh":
             {
                 switch (command[1])
                 {
                     case "time":
-                        return Long.toString(timeFromStart/1000) + " [s]\n";
+                    case "tim":
+                    case "ti":
+                        return "Time from start: " + Long.toString(timeFromStart/1000) + " [s]";
+
                     case "name":
-                        return routerName + "\n";
+                    case "nam":
+                    case "na":
+                        return "Name: " + routerName;
+
+                    case "interfaces":
+                    case "interface":
+                    case "interfac":
+                    case "interfa":
+                    case "interf":
+                    case "inter":
+                    case "inte":
+                    case "int":
+                    case "in":
+                    {
+                        String log = "interfaces:\n";
+                        for(Socket s : sockets.values())
+                        {
+                            log +=  "    " + s.getName() + ": \n" +
+                                    "        " + IPConverter.numToStr(s.getAddress()) + "\n" +
+                                    "        " + IPConverter.numToStr(s.getNetmask()) + "\n";
+                        }
+                        return log;
+                    }
+
+                    case "config":
+                    case "confi":
+                    case "conf":
+                    case "con":
+                    case "co":
+                    {
+                        String log = "";
+
+                        log += "name:\n" +
+                                "    " + routerName + "\n";
+
+                        log += "time:\n" +
+                                "    " + timeFromStart + "\n";
+
+                        log += callCommand("show interfaces");
+
+                        log += "daemons:\n" +
+                                "    for me:\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonForMe.isOn()) + "\n" +
+                                "    self ports:\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonSelf.isOn()) + "\n" +
+                                "    static routing:\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonStatic.isOn()) + "\n" +
+                                "        routes:\n";
+
+                        for(Route route: daemonStatic.getRoutes())
+                        {
+                            log += "            " + route.toString() + "\n";
+                        }
+
+
+                        log +=  "    RIP:\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonRIP.isOn()) + "\n" +
+                                "    garbage:\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonGarbage.isOn()) + "\n";
+
+
+
+
+
+                        return log;
+                    }
 
                 }
             }
             case "ping":
+            case "pin":
+            case "pi":
             {
-                long dest = IPConverter.strToNum(command[1]);
+                long dest;
+                try {dest = IPConverter.strToNum(command[1]);}
+                catch (Exception e) {return "Invalid address";}
 
                 Package ping = new Package(0, dest);
                 ping.time = this.timeFromStart;
                 ping.type = "ping";
 
                 sendPackage(ping);
+
+                return "Pinging " + command[1] + " ...";
             }
 
 
@@ -273,5 +381,11 @@ public abstract class Router implements Runnable, Config
             }
         }
     }
+
+    // ------------------------------------ others ------------------------------------
+
+    public void showConsole() { console.setVisible(true); }
+
+    public void hideConsole() { console.setVisible(false); }
 
 }

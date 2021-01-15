@@ -26,6 +26,6 @@ public class Route implements Comparable<Route>
     @Override
     public String toString()
     {
-        return IPConverter.numToStr(address) + " " + IPConverter.numToStr(address) + " -> " + socket.getName();
+        return IPConverter.numToStr(address) + " " + IPConverter.numToStr(netmask) + " -> " + socket.getName();
     }
 }

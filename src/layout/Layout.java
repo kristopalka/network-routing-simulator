@@ -50,6 +50,7 @@ public class Layout
             if(socket.getOuterSocket() != null) { socket.getOuterSocket().setOuterSocket(null); }
         }
 
+        devices.get(routerID).hideConsole();
         devices.get(routerID).stopThread();
         devices.remove(routerID);
 

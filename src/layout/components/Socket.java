@@ -56,7 +56,7 @@ public class Socket implements Config
     @Override
     public String toString()
     {
-        return this.address + " " + this.netmask;
+        return IPConverter.numToStr(this.address) + " " + IPConverter.numToStr(this.netmask);
     }
 
     // ------------------------------------ setters ------------------------------------
@@ -131,35 +131,39 @@ public class Socket implements Config
             case "on":
             {
                 this.isOn = true;
-                return "Turning on socket " + this.socketName + "\n";
+                return "Turning on socket " + this.socketName;
             }
             case "off":
+            case "of":
             {
                 this.isOn = false;
-                return "Turning off socket " + this.socketName + "\n";
+                return "Turning off socket " + this.socketName;
             }
             case "set":
+            case "se":
             {
                 try
                 {
                     long address = IPConverter.strToNum(command[1]);
-                    long netmask = IPConverter.strToNum(command[2]);
+                    long netmask = IPConverter.strToMask(command[2]);
                     this.address = address;
                     this.netmask = netmask;
-                    return "Adress setted\n";
+                    return "Adress setted";
                 }
                 catch (Exception e)
                 {
-                    return "Setting address: invalid input\n";
+                    return "Invalid input";
                 }
             }
             case "show":
+            case "sho":
+            case "sh":
             {
-                return "Config: " + this.toString() + "\n";
+                return this.socketName + ": " + this.toString();
             }
             default:
             {
-                return "Config: invalid input\n";
+                return "Invalid input";
             }
         }
     }
