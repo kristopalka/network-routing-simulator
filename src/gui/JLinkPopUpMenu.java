@@ -27,7 +27,7 @@ public class JLinkPopUpMenu extends JPopupMenu {
             
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                     MainFrame.INSTANCE.addLink(routerID, socket);
+                    MainFrame.INSTANCE.addLink(routerID, socket);
                 }
             });
             

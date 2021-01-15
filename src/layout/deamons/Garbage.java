@@ -27,40 +27,56 @@ public class Garbage extends Daemon
             case "on":
             {
                 this.isOn = true;
-                return "Turning on garbage\n";
+                return "Turning on garbage";
             }
             case "off":
+            case "of":
             {
                 this.isOn = false;
-                return "Turning off garbage\n";
+                return "Turning off garbage";
             }
             case "clear":
+            case "clea":
+            case "cle":
+            case "cl":
             {
                 this.clearGaarbage();
-                return "Garbage cleared\n";
+                return "Garbage cleared";
             }
-            case "print":
+            case "show":
+            case "sho":
+            case "sh":
             {
-                switch (command[1])
+                if(command.length == 1)
                 {
-                    case "all":
+                    try
                     {
-                        String log = "";
-                        while(!garbage.isEmpty())
-                        {
-                            log += garbage.poll().toStringExtend() + "\n";
-                        }
-                        return log;
+                        return garbage.poll().toStringExtend();
                     }
-                    default:
+                    catch (Exception e)
                     {
-                        return garbage.poll().toStringExtend() + "\n";
+                        return "Nothink to show";
                     }
                 }
+                else if(command[1] == "all" || command[1] == "al")
+                {
+                    String log = "";
+                    while(!garbage.isEmpty())
+                    {
+                        log += garbage.poll().toStringExtend();
+                    }
+                    if(log == "") return "Nothink to show";
+                    return log;
+                }
+                else
+                {
+                    return "Invalid input";
+                }
+
             }
             default:
             {
-                return "Garbage: invalid input\n";
+                return "Invalid input";
             }
         }
     }

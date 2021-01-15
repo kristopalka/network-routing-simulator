@@ -7,7 +7,6 @@ import layout.devices.*;
 
 public class Main {
 
-    private ArrayList<Router> routers;
     private MainFrame mainFrame; 
 
     public static void main(String[] args) {
@@ -19,9 +18,4 @@ public class Main {
         mainProgram.mainFrame.setVisible(true);
         
     }
-    
-    public static String getInfo() {
-        return "Sim v0";
-    }
-    
 }

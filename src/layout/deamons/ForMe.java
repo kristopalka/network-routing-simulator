@@ -1,7 +1,6 @@
 package layout.deamons;
 
 import layout.components.Package;
-import layout.components.Route;
 import layout.components.Socket;
 
 import java.util.HashMap;
@@ -39,13 +38,14 @@ public class ForMe extends Daemon
                 return "Turning on processing packages for me\n";
             }
             case "off":
+            case "of":
             {
                 this.isOn = false;
                 return "Turning off processing packages for me\n";
             }
             default:
             {
-                return "For me: invalid input\n";
+                return "Invalid input\n";
             }
         }
     }

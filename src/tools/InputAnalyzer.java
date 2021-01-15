@@ -1,5 +1,7 @@
 package tools;
 
+import java.util.regex.Pattern;
+
 public class InputAnalyzer
 {
 
@@ -24,4 +26,11 @@ public class InputAnalyzer
         String str = sb.toString();
         System.out.println(str);
     }
+
+    public static String boolToStr(boolean x)
+    {
+        if(x) return "on";
+        return "off";
+    }
+
 }

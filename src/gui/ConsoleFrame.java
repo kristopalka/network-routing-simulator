@@ -11,14 +11,13 @@ import javax.swing.text.StyleConstants;
 
 public class ConsoleFrame extends javax.swing.JFrame {
     
-    private String ROUTER_NAME;
+    public String ROUTER_NAME;
     public Consumer<String> commands;
 
     public ConsoleFrame(String routerName) {
         initComponents();
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
-        this.printInfo(routerName + " has started.\n");
         this.setLocationByPlatform(true);
     }
 
@@ -245,7 +244,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printInfo(String text) {
+    public void printInfo(String text) {
         SimpleAttributeSet infoSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(infoSAS, Color.MAGENTA);
         
@@ -258,7 +257,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printWarning(String text) {
+    public void printWarning(String text) {
         SimpleAttributeSet warningSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(warningSAS, Color.cyan);
         
@@ -271,7 +270,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printError(String text) {
+    public void printError(String text) {
         SimpleAttributeSet errorSAS = new SimpleAttributeSet(); 
         StyleConstants.setForeground(errorSAS, Color.red);
         
@@ -284,7 +283,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printInput(String text) {
+    public void printInput(String text) {
         SimpleAttributeSet inputSAS = new SimpleAttributeSet(); 
         StyleConstants.setBold(inputSAS, true);
         
@@ -303,7 +302,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
     
-    private void printLine(String line) {
+    public void printLine(String line) {
         try {
             this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(),"\n" + line, null);
         }

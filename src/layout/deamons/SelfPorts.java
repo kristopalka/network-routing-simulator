@@ -44,16 +44,17 @@ public class SelfPorts extends Daemon
             case "on":
             {
                 this.isOn = true;
-                return "Turning on self ports routing\n";
+                return "Turning on self ports routing";
             }
             case "off":
+            case "of":
             {
                 this.isOn = false;
-                return "Turning off self ports routing\n";
+                return "Turning off self ports routing";
             }
             default:
             {
-                return "Self ports routing: invalid input\n";
+                return "Self ports routing: invalid input";
             }
         }
     }

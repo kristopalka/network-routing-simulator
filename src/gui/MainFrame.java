@@ -63,7 +63,6 @@ public class MainFrame extends javax.swing.JFrame {
     public void refreshMap() {
         
         simulationPanel.regenerateLinks();
-        
         simulationPanel.revalidate();
         simulationPanel.repaint();
         
@@ -388,7 +387,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         this.layout = new Layout();
         this.screenMap = new HashMap<>();
-        ((SimulationPanel) this.simulationPanel).removeAllComponents();
+        this.simulationPanel.removeAllComponents();
         this.lb = null;
         this.simulationPanel.removeAll();
         refreshMap();
@@ -551,10 +550,8 @@ public class MainFrame extends javax.swing.JFrame {
         if(this.actualMode == 4) {
             if(this.lb == null) {
                 lb = new LinkBuffer(routerID, socketID);
-                System.out.print("Tworzę start");
             }
             else {
-                System.out.println("Tworzę end");                
                 layout.connect(layout.router(lb.routerID).socket(lb.socketID), layout.router(routerID).socket(socketID));
                 ((SimulationPanel) this.simulationPanel).putLine(new Line(getColor(lb.socketID), getColor(socketID), lb.routerID, routerID));
                 setActualMode(0);
@@ -578,7 +575,6 @@ public class MainFrame extends javax.swing.JFrame {
             if(this.actualMode == 4) {
                 this.lb = null;
                 this.simulationScroll.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                this.setActualMode(0);
             }
             refreshMap();
             this.setActualMode(0);

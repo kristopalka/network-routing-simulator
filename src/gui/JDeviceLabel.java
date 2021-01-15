@@ -50,7 +50,11 @@ public class JDeviceLabel extends JLabel {
     public int hashCode() {
         return this.routerID;
     }
-
+    
+    public void setName(String name) {
+        this.setText(name);
+    }
+            
     public void removeSelf() {
         MainFrame.INSTANCE.deleteRouter(this.routerID);
     }

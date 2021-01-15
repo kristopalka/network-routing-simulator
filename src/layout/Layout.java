@@ -3,8 +3,6 @@ package layout;
 import layout.devices.*;
 import layout.components.Socket;
 import tools.Connection;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -51,6 +49,7 @@ public class Layout
         }
 
         devices.get(routerID).stopThread();
+        devices.get(routerID).hideConsole();
         devices.remove(routerID);
 
         return routerID + " removed successfully";

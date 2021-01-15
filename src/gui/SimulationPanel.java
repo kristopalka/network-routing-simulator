@@ -54,11 +54,14 @@ public class SimulationPanel extends JPanel {
     }
     
     public void removeLineByRouterID(int rID) {
+        HashSet<Line> newSet = new HashSet<>();
         for(Line line : lines) {
-            if(line.routerStartID == rID || line.routerEndID == rID) {
-                lines.remove(line);
+            if(line.routerStartID != rID && line.routerEndID != rID) {
+                newSet.add(line);
             }
         }
+        lines = newSet;
+        MainFrame.INSTANCE.refreshMap();
     }
 
     public void regenerateLinks() {
