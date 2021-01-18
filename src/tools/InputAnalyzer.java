@@ -7,8 +7,8 @@ public class InputAnalyzer
 
     public static String[] parseInputCommand(String inputAction)
     {
-
         inputAction.toLowerCase();
+        inputAction.trim();
         String[] input = inputAction.split(" ");
 
 

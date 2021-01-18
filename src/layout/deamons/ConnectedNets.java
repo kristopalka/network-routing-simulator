@@ -25,7 +25,8 @@ public class ConnectedNets extends Daemon
             if(socket.getOuterSocket() != null)
             {
                 Socket outer = socket.getOuterSocket();
-                if((outer.getNetmask()&outer.getAddress()) == (p.destination&outer.getNetmask()))
+                if((outer.getNetmask()&outer.getAddress()) == (p.destination&outer.getNetmask()) &&
+                   (outer.getNetmask()&outer.getAddress()) == (socket.getNetmask()&socket.getAddress()))
                 {
                     socket.sendPackageThruPort(p);
                     return true;

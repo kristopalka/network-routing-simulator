@@ -139,8 +139,12 @@ public class Socket implements Config
                 this.isOn = false;
                 return "Turning off socket " + this.socketName;
             }
-            case "set":
-            case "se":
+            case "address":
+            case "addres":
+            case "addre":
+            case "addr":
+            case "add":
+            case "ad":
             {
                 try
                 {

@@ -372,6 +372,7 @@ public abstract class Router implements Runnable, Config
 
                 }
             }
+            
             case "ping":
             case "pin":
             case "pi":
@@ -401,8 +402,14 @@ public abstract class Router implements Runnable, Config
 
     // ------------------------------------ others ------------------------------------
 
-    public void showConsole() { console.setVisible(true); }
+    public void showConsole()
+    {
+        console.setVisible(true);
+    }
 
-    public void hideConsole() { console.setVisible(false); }
+    public void hideConsole()
+    {
+        console.setVisible(false);
+    }
 
 }
