@@ -68,6 +68,19 @@ public class Layout
         return free;
     }
 
+    public ArrayList<String> connectedPorts(int routerID)
+    {
+        ArrayList<String> free = new ArrayList<>();
+        Router r = router(routerID);
+
+        for(Socket socket : r.getAllSockets().values())
+        {
+            if(!socket.isFree()) free.add(socket.getName());
+        }
+
+        return free;
+    }
+
     public String connect(Socket s1, Socket s2)
     {
         if(s1 == null) return "Cannot connect, first socket is null";

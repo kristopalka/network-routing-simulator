@@ -55,6 +55,8 @@ public abstract class Router implements Runnable, Config
     }
 
 
+
+
     // ------------------------------------ getters ------------------------------------
 
     public int getID()
@@ -360,15 +362,10 @@ public abstract class Router implements Runnable, Config
                             log += "            " + route.toString() + "\n";
                         }
 
-
                         log +=  "    RIP:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonRIP.isOn()) + "\n" +
                                 "    garbage:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonGarbage.isOn()) + "\n";
-
-
-
-
 
                         return log;
                     }
@@ -400,6 +397,7 @@ public abstract class Router implements Runnable, Config
             }
         }
     }
+
 
     // ------------------------------------ others ------------------------------------
 
