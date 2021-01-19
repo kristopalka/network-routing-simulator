@@ -27,8 +27,8 @@ public abstract class Router implements Runnable, Config
 
 
 
-    protected ForMe daemonForMe = new ForMe(sockets);
-    protected SelfPorts daemonSelf = new SelfPorts(sockets);
+    protected SelfPorts daemonSelfPorts = new SelfPorts(sockets);
+    protected ConnectedNets daemonConnected = new ConnectedNets(sockets);
     protected StaticRouting daemonStatic = new StaticRouting(sockets);
     protected RIP daemonRIP = new RIP(sockets);
     protected Garbage daemonGarbage = new Garbage();
@@ -50,7 +50,11 @@ public abstract class Router implements Runnable, Config
         {
             sockets.put(socketName, new Socket(socketName, this));
         }
+
+        console.printBold(routerName + " has started!");
     }
+
+
 
 
     // ------------------------------------ getters ------------------------------------
@@ -97,6 +101,8 @@ public abstract class Router implements Runnable, Config
 
         while(isRunning)
         {
+
+            System.out.println(routerName + ": ~");
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
@@ -126,6 +132,7 @@ public abstract class Router implements Runnable, Config
     {
         System.out.print(routerName + ": " + p.toString());
         proceedPackage(p);
+        return;
     }
 
     protected void proceedPackage(Package p)
@@ -135,13 +142,13 @@ public abstract class Router implements Runnable, Config
             System.out.println( " TTL=0" + p.getLog());
             return;
         }
-        if(daemonForMe.processPackage(p))
+        if(daemonSelfPorts.processPackage(p))
         {
             System.out.println(" get FOR ME");
             packageForMe(p);
             return;
         }
-        if(daemonSelf.processPackage(p))
+        if(daemonConnected.processPackage(p))
         {
             System.out.println( " send by CONNECTED PORTS");
             return;
@@ -159,6 +166,7 @@ public abstract class Router implements Runnable, Config
 
         daemonGarbage.processPackage(p);
         System.out.println( " cannot send" + p.getLog());
+        return;
     }
 
     protected void packageForMe(Package p)
@@ -179,7 +187,7 @@ public abstract class Router implements Runnable, Config
             {
                 System.out.println(this.routerName + ": ping answer for me:\n" + p.toStringExtend());
 
-                console.printLine("Reply from " + p.source + " time=" + (timeFromStart - p.time) + "[ms]");
+                console.printLine("Reply from " + IPConverter.numToStr(p.source)+ " time=" + (timeFromStart - p.time) + "[ms]");
                 return;
             }
             default:
@@ -203,6 +211,7 @@ public abstract class Router implements Runnable, Config
 
     public String callCommand(String input)
     {
+        if(input == "") return "";
         String[] command = InputAnalyzer.parseInputCommand(input);
         return config(command);
     }
@@ -211,16 +220,20 @@ public abstract class Router implements Runnable, Config
     @Override
     public String config(String[] command)
     {
+        if(command == null) return "";
         if(command.length == 1) return "Incomplete command";
 
         switch (command[0])
         {
             // ----------------- daemond -----------------
-            case "forme":
-            case "form":
-            case "for":
-            case "fo":
-                return daemonForMe.config(Arrays.copyOfRange(command, 1, command.length));
+            case "selfports":
+            case "selfport":
+            case "selfpor":
+            case "selfpo":
+            case "selfp":
+            case "self":
+            case "sel":
+                return daemonSelfPorts.config(Arrays.copyOfRange(command, 1, command.length));
             case "garbage":
             case "garbag":
             case "garba":
@@ -231,14 +244,19 @@ public abstract class Router implements Runnable, Config
             case "rip":
             case "ri":
                 return daemonRIP.config(Arrays.copyOfRange(command, 1, command.length));
-            case "selfports":
-            case "selfport":
-            case "selfpor":
-            case "selfpo":
-            case "selfp":
-            case "self":
-            case "sel":
-                return daemonSelf.config(Arrays.copyOfRange(command, 1, command.length));
+            case "connectednets":
+            case "connectednet":
+            case "connectedne":
+            case "connectedn":
+            case "connected":
+            case "connecte":
+            case "connect":
+            case "connec":
+            case "conne":
+            case "conn":
+            case "con":
+            case "co":
+                return daemonConnected.config(Arrays.copyOfRange(command, 1, command.length));
             case "static":
             case "stati":
             case "stat":
@@ -332,9 +350,9 @@ public abstract class Router implements Runnable, Config
 
                         log += "daemons:\n" +
                                 "    for me:\n" +
-                                "        " + InputAnalyzer.boolToStr(daemonForMe.isOn()) + "\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonSelfPorts.isOn()) + "\n" +
                                 "    self ports:\n" +
-                                "        " + InputAnalyzer.boolToStr(daemonSelf.isOn()) + "\n" +
+                                "        " + InputAnalyzer.boolToStr(daemonConnected.isOn()) + "\n" +
                                 "    static routing:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonStatic.isOn()) + "\n" +
                                 "        routes:\n";
@@ -344,21 +362,17 @@ public abstract class Router implements Runnable, Config
                             log += "            " + route.toString() + "\n";
                         }
 
-
                         log +=  "    RIP:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonRIP.isOn()) + "\n" +
                                 "    garbage:\n" +
                                 "        " + InputAnalyzer.boolToStr(daemonGarbage.isOn()) + "\n";
-
-
-
-
 
                         return log;
                     }
 
                 }
             }
+            
             case "ping":
             case "pin":
             case "pi":
@@ -371,8 +385,8 @@ public abstract class Router implements Runnable, Config
                 ping.time = this.timeFromStart;
                 ping.type = "ping";
 
-                sendPackage(ping);
 
+                sendPackage(ping);
                 return "Pinging " + command[1] + " ...";
             }
 
@@ -385,10 +399,17 @@ public abstract class Router implements Runnable, Config
         }
     }
 
+
     // ------------------------------------ others ------------------------------------
 
-    public void showConsole() { console.setVisible(true); }
+    public void showConsole()
+    {
+        console.setVisible(true);
+    }
 
-    public void hideConsole() { console.setVisible(false); }
+    public void hideConsole()
+    {
+        console.setVisible(false);
+    }
 
 }

@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -28,7 +27,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     private ImageIconGetter iig;
     private LinkBuffer lb;
-    private SimulationPanel simulationPanel;
+    public SimulationPanel simulationPanel;
     
     // actualMode:  0-def, 1-add4SR, 2-add3SR, 3-addPC, 4-addLink, 5-del
     private int actualMode;
@@ -58,19 +57,27 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         simulationScroll.setViewportView(simulationPanel);
         this.setLocationByPlatform(true);
+
     }
     
     public void refreshMap() {
-        
+
         simulationPanel.regenerateLinks();
         simulationPanel.revalidate();
         simulationPanel.repaint();
         
     }
     
+    public void deleteLink(int routerID, String socket) {
+        this.simulationPanel.removeLineBySocketID(routerID, socket);
+        this.layout.disconnect(this.layout.router(routerID).socket(socket));
+        this.refreshMap();
+        this.setActualMode(this.actualMode);
+    }
+    
     public void deleteRouter(int routerID) {
         if(this.actualMode == 5) {
-            this.layout.remRouter(routerID);
+            System.out.println(this.layout.remRouter(routerID));
             this.simulationPanel.remove(screenMap.get(routerID));
             this.simulationPanel.removeLineByRouterID(routerID);
             this.refreshMap();
@@ -101,12 +108,14 @@ public class MainFrame extends javax.swing.JFrame {
         };
     }
     
+    // set mode for adding/removing
     public void setActualMode(int i) {
         if(actualMode != i) {
             this.actualMode = i;
         } else {
             this.actualMode = 0;
             this.simulationScroll.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            
         }
         String text;
         switch(this.actualMode) {
@@ -339,7 +348,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem15);
 
-        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_0, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem16.setText("Add link");
         jMenuItem16.setPreferredSize(new java.awt.Dimension(220, 30));
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
@@ -381,9 +390,10 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // new simulation
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         for(JDeviceLabel jdl : screenMap.values()) {
-            this.layout.remRouter(jdl.getID());
+            System.out.println(this.layout.remRouter(jdl.getID()));
         }
         this.layout = new Layout();
         this.screenMap = new HashMap<>();
@@ -404,7 +414,6 @@ public class MainFrame extends javax.swing.JFrame {
         this.setActualMode(1);
     }//GEN-LAST:event_jLabel1MousePressed
     
-   
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             this.lb = null;
@@ -446,7 +455,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void jLabel5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MousePressed
         this.setActualMode(4);
     }//GEN-LAST:event_jLabel5MousePressed
-
+    
+    // exit
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         for(JDeviceLabel jdl : screenMap.values()) {
             this.layout.remRouter(jdl.getID());
@@ -520,6 +530,7 @@ public class MainFrame extends javax.swing.JFrame {
         return text;
     }
 
+    // loading JSON
     private void loadJSON(String importer) {
         
         // TO DO IMPORT
@@ -527,36 +538,29 @@ public class MainFrame extends javax.swing.JFrame {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    // parsing JSON
     private String saveJSON() {
         
         return("TO DO EXPORT");
         
     }
-    
-    public Color getColor(String colour) {
-        switch(colour) {
-            case "red":
-                return Color.red;
-            case "green":
-                return Color.green;
-            case "blue":
-                return Color.blue;
-            default:
-                return Color.yellow;
-        }
-    }
 
+    // adding link
     public void addLink(int routerID, String socketID) {
-        if(this.actualMode == 4) {
-            if(this.lb == null) {
-                lb = new LinkBuffer(routerID, socketID);
-            }
-            else {
+        if(this.lb == null) {
+            lb = new LinkBuffer(routerID, socketID);
+        }
+        else {
+            if(this.layout.router(lb.routerID).socket(lb.socketID) != this.layout.router(routerID).socket(socketID)) {
                 layout.connect(layout.router(lb.routerID).socket(lb.socketID), layout.router(routerID).socket(socketID));
-                ((SimulationPanel) this.simulationPanel).putLine(new Line(getColor(lb.socketID), getColor(socketID), lb.routerID, routerID));
+                Line l = new Line(lb.socketID, socketID, lb.routerID, routerID);
+                ((SimulationPanel) this.simulationPanel).putLine(l);
                 setActualMode(0);
                 this.lb = null;
                 refreshMap();
+            }
+            else {
+                this.lb = null;
             }
         }
     }
@@ -581,6 +585,15 @@ public class MainFrame extends javax.swing.JFrame {
         }    
     }
     
+    public Line getLineByID(int id) {
+        return ((SimulationPanel) this.simulationPanel).lines.get(id);
+    }
+
+    public void clearLinkBuffer() {
+        this.lb = null;
+    }
+    
+    // buffer for adding links
     class LinkBuffer {
         
         int routerID;
