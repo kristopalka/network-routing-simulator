@@ -38,6 +38,7 @@ public class JDeviceLabel extends JLabel {
             @Override
             public void mouseDragged(MouseEvent e){
                 //and when the Jlabel is dragged
+                MainFrame.INSTANCE.simulationPanel.antiAlias = false;
                 menu = null;
                 linkMenu = null;
                 setLocation(e.getX() + JDeviceLabel.this.getX() - xPressed, e.getY() + JDeviceLabel.this.getY() - yPressed);
@@ -92,6 +93,14 @@ public class JDeviceLabel extends JLabel {
             
         }
         
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            
+            MainFrame.INSTANCE.simulationPanel.antiAlias = true;
+            MainFrame.INSTANCE.refreshMap();
+            
+        }
+        
         private void leftPop(MouseEvent e) {
             linkMenu = new JLinkPopUpMenu(l, id);
             linkMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -102,4 +111,5 @@ public class JDeviceLabel extends JLabel {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
+    
 }

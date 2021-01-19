@@ -44,6 +44,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Router");
         setMinimumSize(new java.awt.Dimension(320, 240));
+        setPreferredSize(new java.awt.Dimension(480, 360));
         setSize(new java.awt.Dimension(640, 480));
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -237,9 +238,10 @@ public class ConsoleFrame extends javax.swing.JFrame {
 
     private void enterInput() {
         String inputText = this.inputTextField.getText();
+        String inputText2 = inputText.replaceAll("\\s+","");
         this.printInput(inputText);
         this.inputTextField.setText("");
-        if(commands != null) {
+        if(commands != null && !inputText2.isBlank()) {
             commands.accept(inputText);
         }
     }
@@ -311,17 +313,17 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
 
-    public void printBold(String line) {
+    public void printBold(String text) {
         SimpleAttributeSet inputSAS = new SimpleAttributeSet();
         StyleConstants.setBold(inputSAS, true);
         try {
-            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(),"\n" + line, inputSAS);
+            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(), text, inputSAS);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     private void increaseFont() {
         Font f = this.outputPane.getFont();
         if(f.getSize() + 2 < 30) {

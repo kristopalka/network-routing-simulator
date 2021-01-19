@@ -5,28 +5,33 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.HashSet;
+import java.util.HashMap;
 import javax.swing.JPanel;
 
 public class SimulationPanel extends JPanel {
     
-    private HashSet<Line> lines;
+    public HashMap<Integer, Line> lines;
     private static int rs = 40;
+    
+    public boolean antiAlias = true;
     
     public SimulationPanel() {
         super();
-        lines = new HashSet<>();
+        lines = new HashMap<>();
+        this.setDoubleBuffered(true);
     }
     
     public void putLine(Line l) {
-        this.lines.add(l);
+        this.lines.put(l.getLineID(), l);
     }
     
     void drawLines(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if(this.antiAlias) {
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }
         
-        for(Line line : lines) {
+        for(Line line : lines.values()) {
             
             g2d.setColor(Color.BLACK);
             g2d.setStroke(new BasicStroke(10f));
@@ -50,23 +55,50 @@ public class SimulationPanel extends JPanel {
     }
 
     public void removeAllComponents() {
-        this.lines = new HashSet<>();
+        this.lines = new HashMap<>();
     }
     
     public void removeLineByRouterID(int rID) {
-        HashSet<Line> newSet = new HashSet<>();
-        for(Line line : lines) {
+        HashMap<Integer, Line> newMap = new HashMap<>();
+        for(Line line : lines.values()) {
             if(line.routerStartID != rID && line.routerEndID != rID) {
-                newSet.add(line);
+                newMap.put(line.getLineID(), line);
             }
         }
-        lines = newSet;
+        lines = newMap;
+        MainFrame.INSTANCE.refreshMap();
+    }
+    
+    public void removeLineBySocketID(int rID, String socket) {
+        HashMap<Integer, Line> newMap = new HashMap<>();
+        for(Line line : lines.values()) {
+            if(line.routerStartID != rID && line.routerEndID != rID) {
+                newMap.put(line.getLineID(), line);
+            }
+            else {
+                if(!line.socketStartID.equals(socket) && !line.socketEndID.equals(socket)) {
+                    newMap.put(line.getLineID(), line);
+                }
+            }
+        }
+        lines = newMap;
         MainFrame.INSTANCE.refreshMap();
     }
 
     public void regenerateLinks() {
-        for(Line line : lines) {
+        for(Line line : lines.values()) {
             line.regnerate();
         }
+    }
+
+    public void removeLineByLineID(int linkID) {
+        HashMap<Integer, Line> newMap = new HashMap<>();
+        for(Line line : lines.values()) {
+            if(line.getLineID() != linkID) {
+                newMap.put(line.getLineID(), line);
+            }
+        }
+        lines = newMap;
+        MainFrame.INSTANCE.refreshMap();
     }
 }
