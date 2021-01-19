@@ -26,7 +26,6 @@ public class ConsoleFrame extends javax.swing.JFrame {
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
         this.setLocationByPlatform(true);
-        this.printInfo(ROUTER_NAME + " has started.");
         lastCommands = new LinkedList<>();
     }
 
@@ -270,6 +269,17 @@ public class ConsoleFrame extends javax.swing.JFrame {
         this.inputTextField.setText("");
         if(commands != null && !inputText2.isBlank()) {
             commands.accept(inputText);
+        }
+    }
+    
+    public void printBold(String text) {
+        SimpleAttributeSet inputSAS = new SimpleAttributeSet();
+        StyleConstants.setBold(inputSAS, true);
+        try {
+            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(), text, inputSAS);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
     

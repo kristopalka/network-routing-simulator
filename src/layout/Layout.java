@@ -55,6 +55,28 @@ public class Layout
         return routerID + " removed successfully";
     }
 
+    public String connect(Socket s1, Socket s2)
+    {
+        if(s1 == s2) return "Cannot connect, you idiot try to put two plugs in to one socket";
+        if(s1 == null) return "Cannot connect, first socket is null";
+        if(s2 == null) return "Cannot connect, second socket is null";
+        if(s1.getOuterSocket() != null ) return "Cannot connect, " + s1.getFullName() + " is occupied";
+        if(s2.getOuterSocket() != null ) return "Cannot connect, " + s2.getFullName() + " is occupied";
+        s1.setOuterSocket(s2);
+        s2.setOuterSocket(s1);
+        return "Connected successfully: " + s1.getFullName() + " - " + s2.getFullName();
+    }
+
+    public String disconnect(Socket s)
+    {
+        if(s.getOuterSocket() == null) return "Cannot disconnect, this socket is not connected";
+
+        String s2name = s.getOuterSocket().getFullName();
+        s.getOuterSocket().setOuterSocket(null);
+        s.setOuterSocket(null);
+        return "Disconnected successfully: " + s.getFullName() + " - " + s2name;
+    }
+
     public ArrayList<String> notConnectedPorts(int routerID)
     {
         ArrayList<String> free = new ArrayList<>();
@@ -67,7 +89,7 @@ public class Layout
 
         return free;
     }
-    
+
     public ArrayList<String> connectedPorts(int routerID)
     {
         ArrayList<String> free = new ArrayList<>();
@@ -79,27 +101,6 @@ public class Layout
         }
 
         return free;
-    }
-
-    public String connect(Socket s1, Socket s2)
-    {
-        if(s1 == null) return "Cannot connect, first socket is null";
-        if(s2 == null) return "Cannot connect, second socket is null";
-        if(s1.getOuterSocket() != null ) return "Cannot connect, " + s1.getFullName() + " is occupied";
-        if(s2.getOuterSocket() != null ) return "Cannot connect, " + s2.getFullName() + " is occupied";
-        s1.setOuterSocket(s2);
-        s2.setOuterSocket(s1);
-        return "Connected successfully: " + s1.getFullName() + " - " + s2.getFullName();
-    }
-
-    public String disconnect(Socket s)
-    { 
-        if(s.getOuterSocket() == null) return "Cannot disconnect, this socket is not connected";
-        
-        String s2name = s.getOuterSocket().getFullName();
-        s.getOuterSocket().setOuterSocket(null);
-        s.setOuterSocket(null);
-        return "Disconnected successfully: " + s.getFullName() + " - " + s2name;
     }
 
     private String repairUniformity(boolean returnLog)

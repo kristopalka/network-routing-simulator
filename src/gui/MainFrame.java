@@ -41,7 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame(Layout layout) {
         
         INSTANCE = this;
-        this.setTitle("Project Simulation");
+        this.setTitle("Project Simulation v1.1");
         this.setMinimumSize(new Dimension(640, 480));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.layout = layout;
@@ -475,7 +475,7 @@ public class MainFrame extends javax.swing.JFrame {
     // credits
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
         Object[] options = { "OK", "GITHUB" };
-        int choice = JOptionPane.showOptionDialog(null, "Project designed by:\nKrzysztof Pałka\nPiotr Węgrzyn", "Credits", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        int choice = JOptionPane.showOptionDialog(null, "Project Simulation  v1.1 designed by:\nKrzysztof Pałka\nPiotr Węgrzyn", "Credits", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
         
         if(choice == JOptionPane.NO_OPTION) {
             if (Desktop.isDesktopSupported()) {
