@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -11,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Random;
@@ -38,7 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame(Layout layout) {
         
         INSTANCE = this;
-        this.setTitle("Project Simulation");
+        this.setTitle("Project Simulation v1.1");
         this.setMinimumSize(new Dimension(640, 480));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.layout = layout;
@@ -469,16 +472,26 @@ public class MainFrame extends javax.swing.JFrame {
         this.exporter(this.saveJSON(), ".json");
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    // import
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        
-        this.loadJSON(importer());
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     // credits
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
-        JOptionPane.showMessageDialog(null, "Simulation Project by\nKrzysztof Pałka\nPiotr Węgrzyn", "Simulation credits", JOptionPane.INFORMATION_MESSAGE);
+        Object[] options = { "OK", "GITHUB" };
+        int choice = JOptionPane.showOptionDialog(null, "Project Simulation  v1.1 designed by:\nKrzysztof Pałka\nPiotr Węgrzyn", "Credits", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        
+        if(choice == JOptionPane.NO_OPTION) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://github.com/thekristopl/Project-Simulation"));
+                } catch (URISyntaxException | IOException ex) {
+                }
+            }
+        }
     }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    // import
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+
+        this.loadJSON(importer());
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     // text exporter for .json files
     private void exporter(String text, String extension) {

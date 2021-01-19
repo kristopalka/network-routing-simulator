@@ -76,7 +76,10 @@ public class SimulationPanel extends JPanel {
                 newMap.put(line.getLineID(), line);
             }
             else {
-                if(!line.socketStartID.equals(socket) && !line.socketEndID.equals(socket)) {
+                if(!line.socketStartID.equals(socket) && line.routerStartID == rID) {
+                    newMap.put(line.getLineID(), line);
+                }
+                if(line.routerEndID == rID && !line.socketEndID.equals(socket)) {
                     newMap.put(line.getLineID(), line);
                 }
             }

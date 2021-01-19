@@ -1,10 +1,15 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -13,12 +18,15 @@ public class ConsoleFrame extends javax.swing.JFrame {
     
     public String ROUTER_NAME;
     public Consumer<String> commands;
+    private LinkedList<String> lastCommands;
+    private int position = 0;
 
     public ConsoleFrame(String routerName) {
         initComponents();
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
         this.setLocationByPlatform(true);
+        lastCommands = new LinkedList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -153,11 +161,11 @@ public class ConsoleFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Info");
+        jMenu3.setText("Help");
         jMenu3.setPreferredSize(new java.awt.Dimension(40, 30));
 
-        showItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        showItem.setText("Show info");
+        showItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        showItem.setText("Open syntax help");
         showItem.setPreferredSize(new java.awt.Dimension(220, 30));
         showItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,7 +208,12 @@ public class ConsoleFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_copyOutputItemActionPerformed
 
     private void showItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showItemActionPerformed
-        // TO DO
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI("https://github.com/thekristopl/Project-Simulation/wiki"));
+            } catch (URISyntaxException | IOException ex) {
+            }
+        }
     }//GEN-LAST:event_showItemActionPerformed
 
     private void increaseFontItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseFontItemActionPerformed
@@ -222,6 +235,19 @@ public class ConsoleFrame extends javax.swing.JFrame {
     private void inputTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputTextFieldKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
             this.enterInput();
+            this.position = lastCommands.size();
+        }
+        if(evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            if(position < lastCommands.size()) {
+                position++;
+                updateInputTextViewer();
+            }   
+        }
+        if(evt.getKeyCode() == KeyEvent.VK_UP) {
+            if(position > 0) {
+                updateInputTextViewer();
+                position--;
+            }
         }
     }//GEN-LAST:event_inputTextFieldKeyPressed
 
@@ -238,11 +264,24 @@ public class ConsoleFrame extends javax.swing.JFrame {
 
     private void enterInput() {
         String inputText = this.inputTextField.getText();
+        lastCommands.add(inputText);
+
         String inputText2 = inputText.replaceAll("\\s+","");
         this.printInput(inputText);
         this.inputTextField.setText("");
         if(commands != null && !inputText2.isBlank()) {
             commands.accept(inputText);
+        }
+    }
+    
+    public void printBold(String text) {
+        SimpleAttributeSet inputSAS = new SimpleAttributeSet();
+        StyleConstants.setBold(inputSAS, true);
+        try {
+            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(), text, inputSAS);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -337,6 +376,10 @@ public class ConsoleFrame extends javax.swing.JFrame {
             this.outputPane.setFont(new Font(f.getFontName(), f.getStyle(), f.getSize() - 2));
         }
     }
+    
+    private void updateInputTextViewer() {
+        this.inputTextField.setText(lastCommands.get(this.position-1));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem closeItem;
@@ -355,4 +398,5 @@ public class ConsoleFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JMenuItem showItem;
     // End of variables declaration//GEN-END:variables
+
 }
