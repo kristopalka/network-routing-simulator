@@ -12,7 +12,7 @@ public class testingMain
 {
     public static void main(String[] args)
     {
-        if(false) {
+        if(true) {
             Layout l = new Layout();
 
 
@@ -75,7 +75,7 @@ public class testingMain
             // --------------------------------- sending package ---------------------------------
             l.router(1).callCommand("ping 192.168.2.2");
         }
-        if(true)
+        if(false)
         {
             Layout l = new Layout();
             l.addRouter(new Router4(1, "Router"));

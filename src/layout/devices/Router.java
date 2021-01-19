@@ -102,7 +102,7 @@ public abstract class Router implements Runnable, Config
         while(isRunning)
         {
 
-            System.out.println(routerName + ": ~");
+            //System.out.println(routerName + ": ~");
             // -------------- processing package --------------
             for(HashMap.Entry<String, Socket> one : sockets.entrySet())
             {
