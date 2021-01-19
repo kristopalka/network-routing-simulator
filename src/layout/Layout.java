@@ -67,6 +67,19 @@ public class Layout
 
         return free;
     }
+    
+    public ArrayList<String> connectedPorts(int routerID)
+    {
+        ArrayList<String> free = new ArrayList<>();
+        Router r = router(routerID);
+
+        for(Socket socket : r.getAllSockets().values())
+        {
+            if(!socket.isFree()) free.add(socket.getName());
+        }
+
+        return free;
+    }
 
     public String connect(Socket s1, Socket s2)
     {
@@ -79,12 +92,14 @@ public class Layout
         return "Connected successfully: " + s1.getFullName() + " - " + s2.getFullName();
     }
 
-    public String disconnect(Socket s1, Socket s2)
-    {
-        if(s1.getOuterSocket() != s2 || s2.getOuterSocket() != s1) return "Cannot disconnect, this sockets are not connected";
-        s1.setOuterSocket(null);
-        s2.setOuterSocket(null);
-        return "Disconnected successfully: " + s1.getFullName() + " - " + s2.getFullName();
+    public String disconnect(Socket s)
+    { 
+        if(s.getOuterSocket() == null) return "Cannot disconnect, this socket is not connected";
+        
+        String s2name = s.getOuterSocket().getFullName();
+        s.getOuterSocket().setOuterSocket(null);
+        s.setOuterSocket(null);
+        return "Disconnected successfully: " + s.getFullName() + " - " + s2name;
     }
 
     private String repairUniformity(boolean returnLog)

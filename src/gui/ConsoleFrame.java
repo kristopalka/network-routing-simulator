@@ -19,6 +19,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         this.ROUTER_NAME = routerName;
         this.setTitle(this.ROUTER_NAME);
         this.setLocationByPlatform(true);
+        this.printInfo(ROUTER_NAME + " has started.");
     }
 
     @SuppressWarnings("unchecked")
@@ -44,6 +45,7 @@ public class ConsoleFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Router");
         setMinimumSize(new java.awt.Dimension(320, 240));
+        setPreferredSize(new java.awt.Dimension(480, 360));
         setSize(new java.awt.Dimension(640, 480));
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -237,9 +239,10 @@ public class ConsoleFrame extends javax.swing.JFrame {
 
     private void enterInput() {
         String inputText = this.inputTextField.getText();
+        String inputText2 = inputText.replaceAll("\\s+","");
         this.printInput(inputText);
         this.inputTextField.setText("");
-        if(commands != null) {
+        if(commands != null && !inputText2.isBlank()) {
             commands.accept(inputText);
         }
     }
