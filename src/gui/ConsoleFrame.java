@@ -352,17 +352,6 @@ public class ConsoleFrame extends javax.swing.JFrame {
         }
     }
 
-    public void printBold(String text) {
-        SimpleAttributeSet inputSAS = new SimpleAttributeSet();
-        StyleConstants.setBold(inputSAS, true);
-        try {
-            this.outputPane.getDocument().insertString(this.outputPane.getDocument().getLength(), text, inputSAS);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void increaseFont() {
         Font f = this.outputPane.getFont();
         if(f.getSize() + 2 < 30) {
