@@ -1,4 +1,4 @@
-# Project Simulation
+# Network routing simulator
 
 Modular simulator of routing networks.
 
